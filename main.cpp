@@ -1,6 +1,5 @@
 #include <iostream>
 #include "Pieces.hpp"
-#include "Debug.hpp"
 
 int main() {
 	std::string const version = "0.0.1";
