@@ -1,4 +1,3 @@
-#include <iostream>
 #include <vector>
 #include "../Bitboard.hpp"
 
@@ -20,14 +19,12 @@ struct Pos {
 };
 
 
-//Avoid handling checks, for now
 struct Piece {
 	//virtual Bitboard genMoves(Boards pieces) = 0;
 	/*Allow for a bool paramater when a piece state
 	must be passed, etc, a king is in check*/
 	//virtual Bitboard genMoves(Boards pieces, bool) = 0;
-
-	//Consider cacheing a piece's bitboard as well as it's position
+	//Consider caching a piece's bitboard as well as it's position
 
 	Pos getPos(Bitboard piece);
 	//Generate a bitboard from a position

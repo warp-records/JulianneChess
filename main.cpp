@@ -35,7 +35,6 @@ std::istream& operator>>(std::istream& is, Pos& p) {
 	return is;
 }
 
-
 int main() {
 	std::string const version = "0.0.1";
 
@@ -51,14 +50,12 @@ int main() {
  	" /_____\\\n" <<
 	"[_______]" << std::endl;
 
-	Pieces::Knight testPiece;
+	Pieces::Bishop testPiece;
 
 	Pos p {6, 2};//testPiece.getPos(testBoard);
 	std::cout << p << std::endl;
 
 	outBitBoard(std::cout, testPiece.diagonalMoves(p));
-
-
 
 	return 0;
 }

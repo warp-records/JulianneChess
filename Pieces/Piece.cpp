@@ -1,5 +1,4 @@
 #include <cstdint>
-#include <cmath>
 #include "Piece.hpp"
 
 /*Pos Piece::getPos(Bitboard piece) {
@@ -23,9 +22,6 @@
 
 		return { row, column };
 }*/
-
-
-
 
 
 Pos Piece::getPos(Bitboard piece) {
