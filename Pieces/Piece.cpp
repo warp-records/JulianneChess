@@ -24,6 +24,7 @@
 }*/
 
 
+
 Pos Piece::getPos(Bitboard piece) {
 		/*Maybe be memory conservative
 		for deep move generation*/
@@ -106,11 +107,11 @@ Magic for right column:
 
 Bitboard Piece::diagonalMoves(Pos p) {
 	//Magic for left to right diagonal
-	uint64_t lrLine = 0x0102040810204080;
-	uint64_t rlLine = 0x8040201008040201;
+	Bitboard lrLine = 0x0102040810204080;
+	Bitboard rlLine = 0x8040201008040201;
 
-	uint64_t lCutMask = 0x8080808080808080;
-	uint64_t rCutMask = 0x101010101010101;
+	Bitboard lCutMask = 0x8080808080808080;
+	Bitboard rCutMask = 0x101010101010101;
 
 	uint64_t board = 0x00;
 
@@ -123,7 +124,7 @@ Bitboard Piece::diagonalMoves(Pos p) {
 		for (int i = 0; i < lDist; i++)
 			lrLine &= ~(lCutMask >> i);
 	} else {
-		lDist = std::abs(lDist);
+		lDist = -lDist;
 		lrLine <<= lDist;
 
 		for (int i = 0; i < lDist; i++)
@@ -138,7 +139,7 @@ Bitboard Piece::diagonalMoves(Pos p) {
 		for (int i = 0; i < rDist; i++)
 			rlLine &= ~(lCutMask >> i);
 	} else {
-		rDist = std::abs(rDist);
+		rDist = -rDist;
 
 		rlLine <<= rDist;
 		for (int i = 0; i < rDist; i++)

@@ -16,6 +16,14 @@ struct Boards {
 struct Pos {
 	uint8_t column;
 	uint8_t row;
+
+	operator std::string() const {
+		std::string str;
+		str += 'A' + row;
+		str += '0' + column;
+
+		return str;
+	} 
 };
 
 
@@ -25,11 +33,18 @@ struct Piece {
 	must be passed, etc, a king is in check*/
 	//virtual Bitboard genMoves(Boards pieces, bool) = 0;
 	//Consider caching a piece's bitboard as well as it's position
+	virtual Bitboard genMoves(Pos pos) = 0;
+	virtual Bitboard genMoves(Bitboard piece) {
+		return genMoves(getPos(piece));
+	}
 
 	Pos getPos(Bitboard piece);
 	//Generate a bitboard from a position
 	//This is bugged:
-	Bitboard getBBoard(Pos p) { return 0b1 << (p.row*8 + 7 - p.column); }
+	Bitboard getBBoard(Pos p) {
+		Bitboard board = 0x1;
+		return board << (p.row*8 + 7 - p.column); 
+	}
 	//STRAIGHT, WHITE M...
 	Bitboard straightMoves(Pos p);
 	Bitboard diagonalMoves(Pos p);
