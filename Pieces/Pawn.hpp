@@ -2,6 +2,8 @@
 
 namespace Pieces {
 	struct Pawn : public Piece {
-		Bitboard genMoves(Pos p);	
+		Pawn(Pos _pos) { pos = _pos; };
+
+		Bitboard genMoves();
 	};
 }

@@ -2,6 +2,8 @@
 
 namespace Pieces {
 	struct Queen : public Piece {
-		Bitboard genMoves(Pos pos);
+		Queen(Pos _pos) { pos = _pos; };
+
+		Bitboard genMoves();
 	};
 }

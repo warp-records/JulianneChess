@@ -1,49 +1,6 @@
 #include <cstdint>
 #include "Piece.hpp"
 
-/*Pos Piece::getPos(Bitboard piece) {
-		//Maybe be memory conservative
-		//for deep move generation
-		//Start one out of bounds because of pre-increment and pre-decrement
-		uint8_t row = 0, column = 7;
-
-		//Note: the calculatd row and column are endian dependent
-		//Consider calculating beforehand
-
-		//Using a binary search would result in
-		//a quicker search.
-		for (size_t mask = 0xFF; piece & mask == 0x00; mask <<= 8) {
-			row++;
-		}
-
-		for (uint8_t mask = 0x01 << row; piece & mask == 0x00; mask <<= 1) {
-			column--;
-		}
-
-		return { row, column };
-}*/
-
-
-
-Pos Piece::getPos(Bitboard piece) {
-		/*Maybe be memory conservative
-		for deep move generation*/
-		//Start one out of bounds because of pre-increment and pre-decrement
-		uint8_t row = 0, column = 7;
-
-		//Note: the calculated row and column are endian dependent
-		//Consider calculating beforehand
-
-		/*Using a binary search would result in
-		a quicker search.*/
-		uint64_t n = 0b1;
-
-		int i = 0;
-		for (; n != piece; i++, n<<=1);
-
-		return { i / 8, 7 - (i % 8) };
-}
-
 
 /*
 Left to right diagonal:
@@ -74,14 +31,14 @@ Magic for right to left diagonal:
 0x8040201008040201
 */
 
-Bitboard Piece::straightMoves(Pos p) {
+Bitboard Piece::straightMoves() {
 
-	//board |= (0xFF << (p.row*8));
+	//board |= (0xFF << (pos.row*8));
 	uint64_t board = 0xFF;
-	board <<= p.row*8;
+	board <<= pos.row*8;
 
 	//Magic for leftmost column
-	board |= (0x8080808080808080 >> p.column);
+	board |= (0x8080808080808080 >> pos.column);
 
 	return board;
 }
@@ -105,7 +62,7 @@ Magic for right column:
 
 
 
-Bitboard Piece::diagonalMoves(Pos p) {
+Bitboard Piece::diagonalMoves() {
 	//Magic for left to right diagonal
 	Bitboard lrLine = 0x0102040810204080;
 	Bitboard rlLine = 0x8040201008040201;
@@ -116,7 +73,7 @@ Bitboard Piece::diagonalMoves(Pos p) {
 	uint64_t board = 0x00;
 
 	//Distance to move each diagonal from the point 0, 0
-	int8_t lDist = p.column - p.row;
+	int8_t lDist = pos.column - pos.row;
 
 	if (lDist >= 0) {
 		lrLine >>= lDist;
@@ -131,7 +88,7 @@ Bitboard Piece::diagonalMoves(Pos p) {
 			lrLine &= ~(rCutMask << i);
 	}
 
-	int8_t rDist = p.column + p.row - 7;
+	int8_t rDist = pos.column + pos.row - 7;
 
 	if (rDist >= 0) {
 		rlLine >>= rDist;

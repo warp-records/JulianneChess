@@ -39,7 +39,7 @@ std::istream& operator>>(std::istream& is, Pos& p) {
 
 int main() {
 	std::cout << "Julianne Chess\n\n" <<
-	"Version: " << VERSION << "\n\nRift84\n\n";
+	 "Rift84\n\n";
 
 	std::cout << 
 	"   |\\_" <<   "      -----------------\n" <<
@@ -49,13 +49,6 @@ int main() {
  	" |  =  |\n" <<
  	" /_____\\\n" <<
 	"[_______]\n" << std::endl;
-
-	Pieces::Queen 	queen;
-	Pieces::Bishop 	bishop;
-	Pieces::Rook 	rook;
-	Pieces::King 	king;
-	Pieces::Knight 	knight;
-	Pieces::Pawn 	pawn;
 	
 	/*std::cout << "King moves at " << pos << '\n' << std::endl;
 	outBitBoard(std::cout, king.genMoves(pos));
@@ -95,37 +88,6 @@ int main() {
 			return -1;
 		}
 
-		//I have no clue how else I can do this god damn it this is weird
-		Piece* piece = nullptr;
-
-		switch (in) {
-			case 0:
-				piece = new Pieces::King;
-				break;
-
-			case 1:
-				piece = new Pieces::Queen;
-				break;
-
-			case 2:
-				piece = new Pieces::Rook;
-				break;
-
-			case 3:
-				piece = new Pieces::Bishop;
-				break;
-
-			case 4:
-				piece = new Pieces::Knight;
-				break;
-
-			case 5:
-				piece = new Pieces::Pawn;
-				break;
-
-			case 6:
-				return 0;
-		}
 
 		std::cout << "\n\nEnter a position (A1 - H8):\n> "
 		<< std::flush;
@@ -135,7 +97,44 @@ int main() {
 
 		std::cout <<  "\n\n";
 
-		outBitBoard(std::cout, piece->genMoves(pos), false);
+		//I have no clue how else I can do this god damn it this is weird
+		Piece* piece = nullptr;
+
+		bool quitFlag = false;
+
+		switch (in) {
+			case 0:
+				piece = new Pieces::King(pos);
+				break;
+
+			case 1:
+				piece = new Pieces::Queen(pos);
+				break;
+
+			case 2:
+				piece = new Pieces::Rook(pos);
+				break;
+
+			case 3:
+				piece = new Pieces::Bishop(pos);
+				break;
+
+			case 4:
+				piece = new Pieces::Knight(pos);
+				break;
+
+			case 5:
+				piece = new Pieces::Pawn(pos);
+				break;
+
+			case 6:
+
+				break;
+		}
+
+		//Pieces::Rook piece(pos);
+
+		outBitBoard(std::cout, piece->genMoves(), false);
 
 		delete piece;
 	}

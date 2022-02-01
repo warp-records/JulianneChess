@@ -2,6 +2,9 @@
 
 namespace Pieces {
 	struct Knight : public Piece {
-		Bitboard genMoves(Pos p);
+		Knight(Pos _pos) { pos = _pos; };
+		bool canCastle = true;
+
+		Bitboard genMoves();
 	};
 }

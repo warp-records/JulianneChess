@@ -31,23 +31,23 @@ namespace Pieces {
 		0x8000
 	*/
 
-	Bitboard Pawn::genMoves(Pos p) {
+	Bitboard Pawn::genMoves() {
 
 		Bitboard moves = 0x8000;
 
 		Bitboard constexpr lCutMask = 0x7f7f7f7f7f7f7f7f;
 		Bitboard constexpr rCutMask = 0xfefefefefefefe;
 
-		int const shift = (p.row - 1)*8 - p.column;
+		int const shift = (pos.row - 1)*8 - pos.column;
 		if (shift >= 0) {
 			moves <<= shift;
 		} else {
 			moves >>= -shift;
 		}
 
-		if (p.column == 0) {
+		if (pos.column == 0) {
 			moves &= rCutMask;
-		} else if (p.column == 7) {
+		} else if (pos.column == 7) {
 			moves &= lCutMask;
 		}
 

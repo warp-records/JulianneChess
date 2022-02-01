@@ -60,23 +60,23 @@ namespace Pieces {
 
 		*/
 
-	Bitboard Knight::genMoves(Pos p) {
+	Bitboard Knight::genMoves() {
 
 		Bitboard moves = 0x5088208850;
 
 		Bitboard constexpr lCutMask = 0x0f0f0f0f0f0f0f0f;
 		Bitboard constexpr rCutMask = 0xf0f0f0f0f0f0f0f0;
 
-		int const shift = (p.row - 2)*8 - p.column + 2;
+		int const shift = (pos.row - 2)*8 - pos.column + 2;
 		if (shift >= 0) {
 			moves <<= shift;
 		} else {
 			moves >>= -shift;
 		}
 
-		if (p.column < 2) {
+		if (pos.column < 2) {
 			moves &= rCutMask;
-		} else if (p.column > 5) {
+		} else if (pos.column > 5) {
 			moves &= lCutMask;
 		}
 
