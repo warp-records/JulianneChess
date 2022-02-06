@@ -5,5 +5,6 @@ namespace Pieces {
 		Bishop(Pos _pos) { pos = _pos; };
 
 		Bitboard genMoves();
+		operator std::string() const { return "Bishop"; }
 	};
 }

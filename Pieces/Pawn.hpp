@@ -5,5 +5,6 @@ namespace Pieces {
 		Pawn(Pos _pos) { pos = _pos; };
 
 		Bitboard genMoves();
+		operator std::string() const { return "Pawn"; }
 	};
 }

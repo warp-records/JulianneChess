@@ -9,5 +9,6 @@ namespace Pieces {
 
 		//Bitboard genCastle();
 		Bitboard genMoves();
+		operator std::string() const { return "Queen"; }
 	};
 }

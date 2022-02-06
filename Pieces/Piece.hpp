@@ -50,6 +50,7 @@ public:
 	//virtual Bitboard genMoves(Boards pieces, bool) = 0;
 	//Consider caching a piece's bitboard as well as it's position
 	virtual Bitboard genMoves() = 0;
+	virtual operator std::string() const = 0;
 
 	Pos getPos() { return pos; }
 	Bitboard getBBoard() { return bitboard; }
