@@ -26,6 +26,12 @@ struct Pos {
 	} 
 };
 
+enum Color { Black, White };
+
+
+/*DONT INSTANTIATE THIS! Making this an
+abstract class is causing a ton of trouble,
+even though it really should be.*/
 
 class Piece {
 protected:
@@ -49,8 +55,8 @@ public:
 	must be passed, etc, a king is in check*/
 	//virtual Bitboard genMoves(Boards pieces, bool) = 0;
 	//Consider caching a piece's bitboard as well as it's position
-	virtual Bitboard genMoves() = 0;
-	virtual operator std::string() const = 0;
+	virtual Bitboard genMoves();
+	virtual operator std::string() const;
 
 	Pos getPos() { return pos; }
 	Bitboard getBBoard() { return bitboard; }
@@ -62,4 +68,6 @@ public:
 	the other pieces, since it is a STRAIGHT, WHITE, M...*/
 	Bitboard straightMoves();
 	Bitboard diagonalMoves();
+
+	Piece() { throw std::exception(); }
 };
