@@ -26,12 +26,11 @@ struct Pos {
 	} 
 };
 
-enum Color { Black, White };
 
 
 /*DONT INSTANTIATE THIS! Making this an
 abstract class is causing a ton of trouble,
-even though it really should be.*/
+even though it really should be.*/ 
 
 class Piece {
 protected:
@@ -54,9 +53,11 @@ public:
 	/*Allow for a bool paramater when a piece state
 	must be passed, etc, a king is in check*/
 	//virtual Bitboard genMoves(Boards pieces, bool) = 0;
-	//Consider caching a piece's bitboard as well as it's position
-	virtual Bitboard genMoves();
-	virtual operator std::string() const;
+	
+	/*Consider using a lookup table instead
+	of just generating the moves.*/
+	virtual Bitboard genMoves() { throw std::exception(); }
+	virtual operator std::string() const { throw std::exception(); }
 
 	Pos getPos() { return pos; }
 	Bitboard getBBoard() { return bitboard; }
