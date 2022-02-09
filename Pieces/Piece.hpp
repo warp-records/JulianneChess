@@ -49,15 +49,13 @@ protected:
 
 public:	
 
-	//virtual Bitboard genMoves(Boards pieces) = 0;
 	/*Allow for a bool paramater when a piece state
 	must be passed, etc, a king is in check*/
-	//virtual Bitboard genMoves(Boards pieces, bool) = 0;
 	
 	/*Consider using a lookup table instead
 	of just generating the moves.*/
-	virtual Bitboard genMoves() { throw std::exception(); }
-	virtual operator std::string() const { throw std::exception(); }
+	virtual Bitboard genMoves() = 0;
+	virtual operator std::string() const = 0;
 
 	Pos getPos() { return pos; }
 	Bitboard getBBoard() { return bitboard; }
@@ -70,5 +68,4 @@ public:
 	Bitboard straightMoves();
 	Bitboard diagonalMoves();
 
-	Piece() { throw std::exception(); }
 };
