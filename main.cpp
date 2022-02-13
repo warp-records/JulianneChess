@@ -2,9 +2,9 @@
 #include <string>
 #include <optional>
 #include "Pieces.hpp"
-#include "Bitboard.hpp"
+#include "Gameboard.hpp"
 
-#define VERSION "0.1.0"
+#define VERSION "0.2.0"
 
 //Some reason this doesn't link when placed in Piece.hpp or Piece.cpp
 std::ostream& operator<<(std::ostream& os, Pos pos) {
@@ -39,7 +39,7 @@ std::istream& operator>>(std::istream& is, Pos& p) {
 
 int main() {
 	std::cout << "Julianne Chess\n\n" <<
-	 "Rift84\n\n";
+	 "Version " << VERSION << "\n\n";
 
 	std::cout << 
 	"   |\\_" <<   "      -----------------\n" <<
@@ -49,25 +49,12 @@ int main() {
  	" |  =  |\n" <<
  	" /_____\\\n" <<
 	"[_______]\n" << std::endl;
+
+	GameBoard board;
+
+	outBitBoard(std::cout, board.genBitBoard());
 	
-	/*std::cout << "King moves at " << pos << '\n' << std::endl;
-	outBitBoard(std::cout, king.genMoves(pos));
-
-	std::cout << "Queen moves at " << pos << '\n' << std::endl;
-	outBitBoard(std::cout, queen.genMoves(pos));
-
-	std::cout << "Bishop moves at " << pos << '\n' << std::endl;
-	outBitBoard(std::cout, bishop.genMoves(pos));
-
-	std::cout << "Rook moves at " << pos << '\n' << std::endl;
-	outBitBoard(std::cout, rook.genMoves(pos));
-
-	std::cout << "Knight moves at " << pos << '\n' << std::endl;
-	outBitBoard(std::cout, knight.genMoves(pos));
-
-	std::cout << "Pawn moves at " << pos << '\n' << std::endl;
-	outBitBoard(std::cout, pawn.genMoves(pos));*/
-
+	/*
 	while (true) {
 		char in;
 
@@ -137,7 +124,7 @@ int main() {
 		outBitBoard(std::cout, piece->genMoves(), false);
 
 		delete piece;
-	}
+	}*/
 
 
 	return 0;

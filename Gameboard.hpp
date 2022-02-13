@@ -4,11 +4,10 @@
 
 #pragma once
 
-enum Color { Black, White };
-
 class GameBoard {
 
-	typedef std::vector<std::shared_ptr<Piece>> PieceList;
+	enum Color { Black, White };
+
 	typedef std::shared_ptr<Piece> PiecePtr;
 
 	struct Team {
@@ -17,8 +16,8 @@ class GameBoard {
 		Keep a list of all pieces and a list of specific
 		piece types, for quicker lookup.
 		Consider moving to stack for better performance.*/
-		PieceList pieceLists;
-		PieceList king, queens, rooks, bishops, knights, pawns;
+		std::vector<PiecePtr> pieceList;
+		std::vector<PiecePtr> king, queens, rooks, bishops, knights, pawns;
 		Bitboard teamBoard;
 		/*
 		
@@ -48,12 +47,15 @@ class GameBoard {
 
 		0x000000000000FFFF
 		*/
-	}
+		Team(Color _color);
+	};
 
-	Team black(Black);
-	Team white(White);
+	Team black { Black };
+	Team white { White };
 
 public:
 	GameBoard();
-	Team(Color _color);
+
+	//For debugging purposes
+	Bitboard genBitBoard() const;
 };
