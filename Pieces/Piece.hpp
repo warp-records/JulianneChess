@@ -55,7 +55,7 @@ public:
 	virtual Bitboard genMoves() = 0;
 	virtual operator std::string() const = 0;
 
-	Pos getPos() { return pos; }
+	Pos getPos() const { return pos; }
 	Bitboard getBBoard() {
 		if (!bitboard) {
 			bitboard = genBBoard();
