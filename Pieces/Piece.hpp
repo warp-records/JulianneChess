@@ -39,10 +39,8 @@ protected:
 	Bitboard bitboard = 0x00;
 
 	Bitboard genBBoard() {
-		if (!bitboard) {
-			bitboard = 0x1;
-			bitboard <<= (pos.row*8 + 7 - pos.column);
-		}
+		bitboard = 0x1;
+		bitboard <<= (pos.row*8 + 7 - pos.column);
 
 		return bitboard;
 	}
@@ -58,7 +56,13 @@ public:
 	virtual operator std::string() const = 0;
 
 	Pos getPos() { return pos; }
-	Bitboard getBBoard() { return bitboard; }
+	Bitboard getBBoard() {
+		if (!bitboard) {
+			bitboard = genBBoard();
+		}
+
+		return bitboard;
+	}
 	//Generate a bitboard from a position
 	//This is bugged:
 
