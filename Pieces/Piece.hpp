@@ -27,25 +27,49 @@ struct Pos {
 };
 
 
-struct Piece {
-	//virtual Bitboard genMoves(Boards pieces) = 0;
-	/*Allow for a bool paramater when a piece state
-	must be passed, etc, a king is in check*/
-	//virtual Bitboard genMoves(Boards pieces, bool) = 0;
-	//Consider caching a piece's bitboard as well as it's position
-	virtual Bitboard genMoves(Pos pos) = 0;
-	virtual Bitboard genMoves(Bitboard piece) {
-		return genMoves(getPos(piece));
+
+/*DONT INSTANTIATE THIS! Making this an
+abstract class is causing a ton of trouble,
+even though it really should be.*/ 
+
+class Piece {
+protected:
+
+	Pos pos;
+	Bitboard bitboard = 0x00;
+
+	Bitboard genBBoard() {
+		bitboard = 0x1;
+		bitboard <<= (pos.row*8 + 7 - pos.column);
+
+		return bitboard;
 	}
 
-	Pos getPos(Bitboard piece);
+public:	
+
+	/*Allow for a bool paramater when a piece state
+	must be passed, etc, a king is in check*/
+	
+	/*Consider using a lookup table instead
+	of just generating the moves.*/
+	virtual Bitboard genMoves() = 0;
+	virtual operator std::string() const = 0;
+
+	Pos getPos() const { return pos; }
+	Bitboard getBBoard() {
+		if (!bitboard) {
+			bitboard = genBBoard();
+		}
+
+		return bitboard;
+	}
 	//Generate a bitboard from a position
 	//This is bugged:
-	Bitboard getBBoard(Pos p) {
-		Bitboard board = 0x1;
-		return board << (p.row*8 + 7 - p.column); 
-	}
-	//STRAIGHT, WHITE M...
-	Bitboard straightMoves(Pos p);
-	Bitboard diagonalMoves(Pos p);
+
+	/*Please note, in the case of a white king, 
+	we must acknowledge that it has privelege over
+	the other pieces, since it is a STRAIGHT, WHITE, M...*/
+	Bitboard straightMoves();
+	Bitboard diagonalMoves();
+
 };

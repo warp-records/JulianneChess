@@ -2,6 +2,9 @@
 
 namespace Pieces {
 	struct Bishop : public Piece {
-		Bitboard genMoves(Pos p);
+		Bishop(Pos _pos) { pos = _pos; };
+
+		Bitboard genMoves();
+		operator std::string() const { return "Bishop"; }
 	};
 }

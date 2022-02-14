@@ -2,6 +2,13 @@
 
 namespace Pieces {
 	struct Rook : public Piece {
-		Bitboard genMoves(Pos p); 
+		Rook(Pos _pos) { pos = _pos; };
+		/*Permanently set to false if piece has 
+		moved and / or castled*/
+		bool canCastle = true;
+
+		//Bitboard genCastle();
+		Bitboard genMoves();
+		operator std::string() const { return "Queen"; }
 	};
 }
