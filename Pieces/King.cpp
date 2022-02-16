@@ -46,24 +46,6 @@ Right cut mask:
 namespace Pieces {
 
 	Bitboard King::genMoves() {
-		Bitboard moves = 0x00e0e0e0;
-
-		Bitboard constexpr lCutMask = 0x7f7f7f7f7f7f7f7f;
-		Bitboard constexpr rCutMask = 0xfefefefefefefe;
-
-		int const shift = (pos.row - 1)*8 - pos.column + 1;
-		if (shift >= 0) {
-			moves <<= shift;
-		} else {
-			moves >>= -shift;
-		}
-
-		if (pos.column == 0) {
-			moves &= rCutMask;
-		} else if (pos.column == 7) {
-			moves &= lCutMask;
-		}
-
-		return moves;
-	};
+		return MoveTables::King[pos.column][pos.row];
+	}
 }

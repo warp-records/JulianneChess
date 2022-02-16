@@ -54,7 +54,7 @@ int main() {
 
 	outBitBoard(std::cout, board.genBitBoard());
 	
-	/*
+	
 	while (true) {
 		char in;
 
@@ -74,6 +74,10 @@ int main() {
 			std::cerr << "Error" << std::endl;
 			return -1;
 		}
+
+		//Quit program
+		if (in == 6)
+			return 0;
 
 
 		std::cout << "\n\nEnter a position (A1 - H8):\n> "
@@ -113,19 +117,10 @@ int main() {
 			case 5:
 				piece = new Pieces::Pawn(pos);
 				break;
-
-			case 6:
-
-				break;
 		}
-
-		//Pieces::Rook piece(pos);
 
 		outBitBoard(std::cout, piece->genMoves(), false);
 
 		delete piece;
-	}*/
-
-
-	return 0;
+	}
 }

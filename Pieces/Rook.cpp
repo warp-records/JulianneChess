@@ -4,6 +4,6 @@
 namespace Pieces {
 
 	Bitboard Rook::genMoves() {
-		return straightMoves();
+		return MoveTables::Rook[pos.column][pos.row];
 	}
 }

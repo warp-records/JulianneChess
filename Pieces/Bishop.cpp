@@ -4,6 +4,6 @@
 namespace Pieces {
 
 	Bitboard Bishop::genMoves() {
-		return diagonalMoves();
+		return MoveTables::Bishop[pos.column][pos.row];
 	}
 }

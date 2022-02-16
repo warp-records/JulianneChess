@@ -1,5 +1,6 @@
 #include <vector>
 #include "../Bitboard.hpp"
+#include "PieceMoveTables.hpp"
 
 #pragma once
 

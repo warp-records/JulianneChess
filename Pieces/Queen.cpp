@@ -3,6 +3,6 @@
 
 namespace Pieces {
 	Bitboard Queen::genMoves() {
-		return diagonalMoves() | straightMoves();
+		return MoveTables::Queen[pos.column][pos.row];
 	}
 }
