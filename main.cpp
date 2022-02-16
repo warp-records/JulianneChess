@@ -1,4 +1,6 @@
 #include <iostream>
+#include <fstream>
+#include <iomanip>
 #include <string>
 #include <optional>
 #include "Pieces.hpp"
@@ -54,78 +56,31 @@ int main() {
 
 	outBitBoard(std::cout, board.genBitBoard());
 	
-	/*
-	while (true) {
-		char in;
+	/*Table format:
+	tables are indexed by [Column][Row]
+	*/
+	Pieces::Bishop bishop({0, 0});
+	std::ofstream moveOutput("bishopMoveTable.txt");
 
-		std::cout << "Select a piece type:\n\n" <<
-		"0 - King\n" <<
-		"1 - Queen\n" <<
-		"2 - Rook\n" <<
-		"3 - Bishop\n" <<
-		"4 - Knight\n" <<
-		"5 - Pawn\n" << 
-		"6 - Quit\n\n> " << std::flush;
+	for (uint8_t col = 0; col < 8; col++) {
+		moveOutput << "\t\t{";
 
-		std::cin >> in;
-		in -= '0';
+		for (uint8_t row = 0; row < 8; row++) {
+			bishop.setPos({col, row});
+			moveOutput << " 0x" <<
+			std::hex << std::setfill('0') <<
+			std::setw(16) << bishop.genMoves();
 
-		if (!std::cin.good() || !(0 <= in && in <= 6)) {
-			std::cerr << "Error" << std::endl;
-			return -1;
+			if (row < 7)
+				moveOutput << ", ";
 		}
 
+		moveOutput << " }";
 
-		std::cout << "\n\nEnter a position (A1 - H8):\n> "
-		<< std::flush;
-
-		Pos pos { 0, 0 };
-		std::cin >> pos;
-
-		std::cout <<  "\n\n";
-
-		//I have no clue how else I can do this god damn it this is weird
-		Piece* piece = nullptr;
-
-		bool quitFlag = false;
-
-		switch (in) {
-			case 0:
-				piece = new Pieces::King(pos);
-				break;
-
-			case 1:
-				piece = new Pieces::Queen(pos);
-				break;
-
-			case 2:
-				piece = new Pieces::Rook(pos);
-				break;
-
-			case 3:
-				piece = new Pieces::Bishop(pos);
-				break;
-
-			case 4:
-				piece = new Pieces::Knight(pos);
-				break;
-
-			case 5:
-				piece = new Pieces::Pawn(pos);
-				break;
-
-			case 6:
-
-				break;
-		}
-
-		//Pieces::Rook piece(pos);
-
-		outBitBoard(std::cout, piece->genMoves(), false);
-
-		delete piece;
-	}*/
-
+		if (col < 7)
+			moveOutput << ",\n";
+	}
+	
 
 	return 0;
 }

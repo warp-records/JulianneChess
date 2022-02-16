@@ -52,10 +52,15 @@ public:
 	
 	/*Consider using a lookup table instead
 	of just generating the moves.*/
+
+	/*Generate a range of moves for a given
+	piece type based on a given position
+	*/
 	virtual Bitboard genMoves() = 0;
 	virtual operator std::string() const = 0;
 
 	Pos getPos() const { return pos; }
+	void setPos(Pos newPos) { pos = newPos; }
 	Bitboard getBBoard() {
 		if (!bitboard) {
 			bitboard = genBBoard();
@@ -71,5 +76,6 @@ public:
 	the other pieces, since it is a STRAIGHT, WHITE, M...*/
 	Bitboard straightMoves();
 	Bitboard diagonalMoves();
+
 
 };

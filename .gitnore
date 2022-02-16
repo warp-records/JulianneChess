@@ -1,4 +1,5 @@
 .build
 Makefile
 Julianne
+Nibbler
 !.gitnore
