@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iomanip>
 #include <string>
+#include <sstream>
 #include <optional>
 #include "Pieces.hpp"
 #include "Gameboard.hpp"
@@ -39,9 +40,10 @@ std::istream& operator>>(std::istream& is, Pos& p) {
 	return is;
 }
 
+template<typename P> std::stringstream genBBTable();
+
 int main() {
-	std::cout << "Julianne Chess\n\n" <<
-	 "Version " << VERSION << "\n\n";
+	std::cout << "Julianne Chess\n\n";
 
 	std::cout << 
 	"   |\\_" <<   "      -----------------\n" <<
@@ -52,35 +54,65 @@ int main() {
  	" /_____\\\n" <<
 	"[_______]\n" << std::endl;
 
-	GameBoard board;
+	std::cout << "Move Bitboards are indexed by [Column][Row]." << 
+	"Use the output to initialize a data structure to store your magics.\n" <<
+	"Generating magic..." << std::flush;
 
-	outBitBoard(std::cout, board.genBitBoard());
+	std::ofstream kingTable("kingTable.txt");
+	kingTable << genBBTable<Pieces::King>().str();
+
+	std::ofstream queenTable("queenTable.txt");
+	queenTable << genBBTable<Pieces::Queen>().str();
+
+	std::ofstream rookTable("rookTable.txt");
+	rookTable << genBBTable<Pieces::Rook>().str();
+
+	std::ofstream bishopTable("bishopTable.txt");
+	bishopTable << genBBTable<Pieces::Bishop>().str();
+
+	std::ofstream knightTable("knightTable.txt");
+	knightTable << genBBTable<Pieces::Knight>().str();
+
+	std::cout << "\n\nDone!\n";
 	
 	/*Table format:
 	tables are indexed by [Column][Row]
 	*/
-	Pieces::Bishop bishop({0, 0});
-	std::ofstream moveOutput("bishopMoveTable.txt");
-
-	for (uint8_t col = 0; col < 8; col++) {
-		moveOutput << "\t\t{";
-
-		for (uint8_t row = 0; row < 8; row++) {
-			bishop.setPos({col, row});
-			moveOutput << " 0x" <<
-			std::hex << std::setfill('0') <<
-			std::setw(16) << bishop.genMoves();
-
-			if (row < 7)
-				moveOutput << ", ";
-		}
-
-		moveOutput << " }";
-
-		if (col < 7)
-			moveOutput << ",\n";
-	}
 	
 
 	return 0;
+}
+
+
+
+//It's really sloppy but I don't feel like creating an entire external class for it
+//STUPID HORSE I JUST FELL OUT OF THE PORSCHE!
+
+template<typename P> std::stringstream genBBTable() {
+	P piece({0, 0});
+	std::stringstream ss;
+
+	ss << "{\n";
+	for (uint8_t col = 0; col < 8; col++) {
+		ss << "\t\t{";
+
+		for (uint8_t row = 0; row < 8; row++) {
+			piece.setPos({col, row});
+			ss << " 0x" <<
+			std::hex << std::setfill('0') <<
+			std::setw(16) << piece.genMoves();
+
+			if (row < 7)
+				ss << ", ";
+		}
+
+		ss << " }";
+
+		if (col < 7)
+			ss << ",\n";
+	}
+
+	ss << "\n}";
+
+	return ss;
 }
