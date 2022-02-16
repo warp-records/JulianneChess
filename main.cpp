@@ -103,7 +103,7 @@ template<typename P> std::stringstream genBBTable() {
 			std::setw(16) << piece.genMoves();
 
 			if (row < 7)
-				ss << ", ";
+				ss << ",";
 		}
 
 		ss << " }";
