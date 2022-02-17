@@ -1,36 +1,6 @@
 #include <cstdint>
 #include "Piece.hpp"
 
-
-/*
-Left to right diagonal:
-10000000
-01000000
-00100000
-00010000
-00001000
-00000100
-00000010
-00000001
-
-Magic for left to right diagonal:
-0x0102040810204080
-
-
-
-Magic for right to left diagonal:
-01
-02
-04
-08
-10
-20
-40
-80
-
-0x8040201008040201
-*/
-
 Bitboard Piece::straightMoves() {
 
 	//board |= (0xFF << (pos.row*8));
@@ -42,23 +12,6 @@ Bitboard Piece::straightMoves() {
 
 	return board;
 }
-
-/*
-Magic for left column:
-0x8080808080808080
-
-10000000
-10000000
-10000000
-10000000
-10000000
-10000000
-10000000
-10000000
-
-Magic for right column:
-0x101010101010101
-*/
 
 
 

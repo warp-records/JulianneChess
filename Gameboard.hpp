@@ -19,34 +19,6 @@ class GameBoard {
 		std::vector<PiecePtr> pieceList;
 		std::vector<PiecePtr> king, queens, rooks, bishops, knights, pawns;
 		Bitboard teamBoard;
-		/*
-		
-		Black board:
-		0b
-		11111111
-		11111111
-		00000000
-		00000000
-		00000000
-		00000000
-		00000000
-		00000000
-
-		0xFFFF000000000000
-
-		White board:
-		0b
-		00000000
-		00000000
-		00000000
-		00000000
-		00000000
-		00000000
-		11111111
-		11111111
-
-		0x000000000000FFFF
-		*/
 		Team(Color _color);
 	};
 

@@ -2,34 +2,6 @@
 #include "Pawn.hpp"
 
 namespace Pieces {
-	/*
-	Pawn move magic:
-		With attack:
-
-		00000000
-		00000000
-		00000000
-		00000000
-		00000000
-		00000000
-		10100000
-		01000000
-
-		0xa040
-
-		Without attack:
-
-		00000000
-		00000000
-		00000000
-		00000000
-		00000000
-		00000000
-		10000000
-		00000000
-
-		0x8000
-	*/
 
 	Bitboard Pawn::genMoves() {
 

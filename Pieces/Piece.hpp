@@ -28,11 +28,6 @@ struct Pos {
 };
 
 
-
-/*DONT INSTANTIATE THIS! Making this an
-abstract class is causing a ton of trouble,
-even though it really should be.*/ 
-
 class Piece {
 protected:
 
