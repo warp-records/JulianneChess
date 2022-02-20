@@ -73,6 +73,36 @@ int main() {
 	std::ofstream knightTable("knightTable.txt");
 	knightTable << genBBTable<Pieces::Knight>().str();
 
+
+/*
+	Consider adding later
+	std::ofstream rightTable("rightRangeTable.txt");
+	rightTable << genBBTable<Pieces::King>().str();
+
+	std::ofstream leftTable("leftRangeTable.txt");
+	leftTable << genBBTable<Pieces::Queen>().str();
+
+	std::ofstream upTable("upRangeTable.txt");
+	upTable << genBBTable<Pieces::Rook>().str();
+
+	std::ofstream downTable("downRangeTable.txt");
+	bishopTable << genBBTable<Pieces::Bishop>().str();
+
+
+
+	std::ofstream upRightTable("upRightRangeTable.txt");
+	upRightTable << genBBTable<>().str();
+
+	std::ofstream upLeftTable("upLeftRangeTable.txt");
+	upLeftTable << genBBTable<>().str();
+
+	std::ofstream downRightTable("downRightRangeTable.txt");
+	downRightTable << genBBTable<>().str();
+
+	std::ofstream downLeftTable("downLeftRangeTable.txt");
+	downLeftTable << genBBTable<>().str();
+*/
+
 	std::cout << "\n\nDone!\n";
 	
 	/*Table format:
