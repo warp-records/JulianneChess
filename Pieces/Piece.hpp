@@ -32,6 +32,8 @@ class Piece {
 protected:
 
 	Pos pos;
+	//This will be invalidated when the 
+	//piece moves. Change later.
 	Bitboard bitboard = 0x00;
 
 	Bitboard genBBoard() {
@@ -41,14 +43,19 @@ protected:
 		return bitboard;
 	}
 
+	//void genAttackMap();
+
+	struct {
+		//Note: initialize per piece later
+		Bitboard allyIntersect = 0x00;
+		Bitboard enemyInterset = 0x00;
+		bool valid = false;
+
+	} cache;
+
 public:	
 
-	/*Allow for a bool paramater when a piece state
-	must be passed, etc, a king is in check*/
-	
-	/*Consider using a lookup table instead
-	of just generating the moves.*/
-	virtual Bitboard genMoves() = 0;
+	virtual Bitboard getMoveRange() = 0;
 	virtual operator std::string() const = 0;
 
 	Pos getPos() const { return pos; }
@@ -59,13 +66,14 @@ public:
 
 		return bitboard;
 	}
-	//Generate a bitboard from a position
-	//This is bugged:
 
-	/*Please note, in the case of a white king, 
-	we must acknowledge that it has privelege over
-	the other pieces, since it is a STRAIGHT, WHITE, M...*/
+	//Bitboard getMoveMap() {};
+	//Generate a bitboard from a position
+
+	//Bench straight moves to see how it compares to
+	//a lookup table
+	/*
 	Bitboard straightMoves();
 	Bitboard diagonalMoves();
-
+	*/
 };

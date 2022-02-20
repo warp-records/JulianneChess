@@ -4,7 +4,7 @@ namespace Pieces {
 	struct Pawn : public Piece {
 		Pawn(Pos _pos) { pos = _pos; };
 
-		Bitboard genMoves();
+		Bitboard getMoveRange();
 		operator std::string() const { return "Pawn"; }
 	};
 }

@@ -3,7 +3,7 @@
 
 namespace Pieces {
 
-	Bitboard Rook::genMoves() {
+	Bitboard Rook::getMoveRange() {
 		return MoveTables::Rook[pos.column][pos.row];
 	}
 }

@@ -3,7 +3,7 @@
 
 namespace Pieces {
 
-	Bitboard Pawn::genMoves() {
+	Bitboard Pawn::getMoveRange() {
 
 		Bitboard moves = 0x8000;
 

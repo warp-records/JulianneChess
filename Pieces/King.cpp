@@ -45,7 +45,7 @@ Right cut mask:
 
 namespace Pieces {
 
-	Bitboard King::genMoves() {
+	Bitboard King::getMoveRange() {
 		return MoveTables::King[pos.column][pos.row];
 	}
 }

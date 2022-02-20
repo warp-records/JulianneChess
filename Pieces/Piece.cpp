@@ -1,9 +1,11 @@
 #include <cstdint>
 #include "Piece.hpp"
 
-Bitboard Piece::straightMoves() {
+Bitboard getMoveMap() {
+	
+}
 
-	//board |= (0xFF << (pos.row*8));
+/*Bitboard Piece::straightMoves() {
 	uint64_t board = 0xFF;
 	board <<= pos.row*8;
 
@@ -59,4 +61,4 @@ Bitboard Piece::diagonalMoves() {
 	board |= lrLine | rlLine;//lrLine | rlLine;
 
 	return board;
-}
+}*/

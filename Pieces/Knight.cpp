@@ -3,7 +3,7 @@
 
 namespace Pieces {
 
-	Bitboard Knight::genMoves() {
+	Bitboard Knight::getMoveRange() {
 		return MoveTables::Knight[pos.column][pos.row];
 	}
 }

@@ -5,7 +5,7 @@ namespace Pieces {
 		Knight(Pos _pos) { pos = _pos; };
 		bool canCastle = true;
 
-		Bitboard genMoves();
+		Bitboard getMoveRange();
 
 		operator std::string() const { return "Knight"; }
 	};

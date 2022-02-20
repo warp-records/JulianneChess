@@ -8,7 +8,7 @@ namespace Pieces {
 		bool canCastle = true;
 
 		//Bitboard genCastle();
-		Bitboard genMoves();
+		Bitboard getMoveRange();
 		operator std::string() const { return "Queen"; }
 	};
 }

@@ -6,7 +6,7 @@ namespace Pieces {
 
 		bool canCastle = true;
 		
-		Bitboard genMoves();
+		Bitboard getMoveRange();
 		operator std::string() const { return "King"; }
 	};
 }
