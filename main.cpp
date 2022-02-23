@@ -119,7 +119,7 @@ int main() {
 				break;
 		}
 
-		outBitBoard(std::cout, piece->genMoves(), false);
+		outBitBoard(std::cout, piece->getMoveRange(), false);
 
 		delete piece;
 	}
