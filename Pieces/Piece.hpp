@@ -55,7 +55,7 @@ protected:
 
 public:	
 
-	virtual Bitboard getMoveRange();
+	virtual Bitboard getMoveRange() = 0;
 	virtual operator std::string() const = 0;
 
 	Pos getPos() const { return pos; }
