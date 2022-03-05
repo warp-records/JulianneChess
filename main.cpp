@@ -103,12 +103,13 @@ int main() {
 	/*Table format:
 	tables are indexed by [Column][Row]
 	*/
+	/*
 	for (uint8_t row = 0; row <= 7; row++) {
 		for (uint8_t col = 0; col <= 7; col++) {
 			Pieces::downLeft piece({col, row});
 			outBitBoard(std::cout, piece.genMoves());
 		}
-	}
+	}*/
 
 	return 0;
 }
