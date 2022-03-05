@@ -9,6 +9,7 @@ add_executable(Julianne Pieces/Bishop.cpp)
 add_executable(Julianne Pieces/King.cpp)
 add_executable(Julianne Pieces/Knight.cpp)
 add_executable(Julianne Pieces/Pawn.cpp)
+add_executable(Julianne Pieces/NonPieces.cpp)
 
 
 set_property(TARGET Julianne PROPERTY CXX_STANDARD 17)
