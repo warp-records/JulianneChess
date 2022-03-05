@@ -22,6 +22,11 @@ namespace Pieces {
 	struct rightStrt : public NonPiece { rightStrt(Pos _pos) : NonPiece(_pos) {}; Bitboard genMoves(); };
 	struct leftStrt : public NonPiece { leftStrt(Pos _pos) : NonPiece(_pos) {}; Bitboard genMoves(); };
 
+	struct upRight : public NonPiece { upRight(Pos _pos) : NonPiece(_pos) {}; Bitboard genMoves(); };
+	//struct downRight : public NonPiece { downRight(Pos _pos) : NonPiece(_pos) {}; Bitboard genMoves(); };
+	struct upLeft : public NonPiece { upLeft(Pos _pos) : NonPiece(_pos) {}; Bitboard genMoves(); };
+	//struct downLeft : public NonPiece { downLeft(Pos _pos) : NonPiece(_pos) {}; Bitboard genMoves(); };
+
 	/*
 	class upRight : NonPiece;
 	class downRight : NonPiece;
