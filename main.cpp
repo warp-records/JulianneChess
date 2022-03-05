@@ -6,6 +6,7 @@
 #include <optional>
 #include "Pieces.hpp"
 #include "Gameboard.hpp"
+#include "Pieces/NonPieces.hpp"
 
 #define VERSION "0.2.0"
 
@@ -54,7 +55,7 @@ int main() {
  	" /_____\\\n" <<
 	"[_______]\n" << std::endl;
 
-	std::cout << "Move Bitboards are indexed by [Column][Row]." << 
+	std::cout << "Move Bitboards are indexed by [Column][Row]. " << 
 	"Use the output to initialize a data structure to store your magics.\n" <<
 	"Generating magic..." << std::flush;
 
@@ -73,6 +74,24 @@ int main() {
 	std::ofstream knightTable("knightTable.txt");
 	knightTable << genBBTable<Pieces::Knight>().str();
 
+	std::ofstream upStrTbl("upStrTable.txt");
+	upStrTbl << genBBTable<Pieces::upStrt>().str();
+
+	std::ofstream downStrTbl("downStrTable.txt");
+	downStrTbl << genBBTable<Pieces::downStrt>().str();
+
+	std::ofstream rightStrTbl("rightStrTable.txt");
+	rightStrTbl << genBBTable<Pieces::rightStrt>().str();
+
+	std::ofstream leftStrTbl("leftStrTable.txt");
+	leftStrTbl << genBBTable<Pieces::leftStrt>().str();
+
+	/*for (int row = 0; row < 8; row++) {
+		for (int col = 0; col < 8; col++) {
+			Pieces::leftStrt pc({col, row});
+			outBitBoard(std::cout, pc.genMoves());
+		}
+	}*/
 
 /*
 	Consider adding later
