@@ -86,48 +86,29 @@ int main() {
 	std::ofstream leftStrTbl("leftStrTable.txt");
 	leftStrTbl << genBBTable<Pieces::leftStrt>().str();
 
-	/*for (int row = 0; row < 8; row++) {
-		for (int col = 0; col < 8; col++) {
-			Pieces::leftStrt pc({col, row});
-			outBitBoard(std::cout, pc.genMoves());
-		}
-	}*/
+	std::ofstream upRightTbl("upRightTable.txt");
+	upRightTbl << genBBTable<Pieces::upRight>().str();
 
-/*
-	Consider adding later
-	std::ofstream rightTable("rightRangeTable.txt");
-	rightTable << genBBTable<Pieces::King>().str();
+	std::ofstream upLeftTbl("upLeftTable.txt");
+	upLeftTbl << genBBTable<Pieces::upLeft>().str();
 
-	std::ofstream leftTable("leftRangeTable.txt");
-	leftTable << genBBTable<Pieces::Queen>().str();
+	std::ofstream downRightTbl("downRightTable.txt");
+	downRightTbl << genBBTable<Pieces::downRight>().str();
 
-	std::ofstream upTable("upRangeTable.txt");
-	upTable << genBBTable<Pieces::Rook>().str();
-
-	std::ofstream downTable("downRangeTable.txt");
-	bishopTable << genBBTable<Pieces::Bishop>().str();
-
-
-
-	std::ofstream upRightTable("upRightRangeTable.txt");
-	upRightTable << genBBTable<>().str();
-
-	std::ofstream upLeftTable("upLeftRangeTable.txt");
-	upLeftTable << genBBTable<>().str();
-
-	std::ofstream downRightTable("downRightRangeTable.txt");
-	downRightTable << genBBTable<>().str();
-
-	std::ofstream downLeftTable("downLeftRangeTable.txt");
-	downLeftTable << genBBTable<>().str();
-*/
+	std::ofstream downLeftTbl("downLeftTable.txt");
+	downLeftTbl << genBBTable<Pieces::downLeft>().str();
 
 	std::cout << "\n\nDone!\n";
 	
 	/*Table format:
 	tables are indexed by [Column][Row]
 	*/
-	
+	for (uint8_t row = 0; row <= 7; row++) {
+		for (uint8_t col = 0; col <= 7; col++) {
+			Pieces::downLeft piece({col, row});
+			outBitBoard(std::cout, piece.genMoves());
+		}
+	}
 
 	return 0;
 }
