@@ -4,6 +4,18 @@
 
 #pragma once
 
+
+//Lmao how did I forget to encapsulate all this
+
+namespace Pieces {
+	enum Color { Black, White };
+	
+	enum PieceType { 
+		King, Queen, Rook, 
+		Bishop, Knight, Pawn
+	};
+}
+
 /*Weird huh? It's an experimental code
 design I thought I'd try out, I guess
 */
@@ -27,7 +39,8 @@ struct Pos {
 	} 
 };
 
-
+/*This really should be inside the Pieces namespace,
+but adding it would screw with a lot of code*/
 class Piece {
 protected:
 
@@ -43,7 +56,7 @@ protected:
 		return bitboard;
 	}
 
-	//void genAttackMap();
+	void genAttackMap();
 
 	struct {
 		//Note: initialize per piece later
@@ -67,7 +80,7 @@ public:
 		return bitboard;
 	}
 
-	//Bitboard getMoveMap() {};
+	Bitboard getMoveMap() {};
 	//Generate a bitboard from a position
 
 	//Bench straight moves to see how it compares to

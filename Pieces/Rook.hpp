@@ -7,6 +7,8 @@ namespace Pieces {
 		moved and / or castled*/
 		bool canCastle = true;
 
+		PieceType const type = Pieces::Rook;
+
 		//Bitboard genCastle();
 		Bitboard getMoveRange();
 		operator std::string() const { return "Queen"; }
