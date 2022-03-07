@@ -22,10 +22,10 @@ Bitboard GameBoard::genBitBoard() const {
 }
 
 //GOD this is gonna be so slow
-GameBoard::Team::Team(Pieces::Color _color) {
-	Pieces::Color color = _color;
+GameBoard::Team::Team(Color _color) {
+	Color color = _color;
 
-	uint8_t yPos = (color == Pieces::White ? 0 : 7);
+	uint8_t yPos = (color == White ? 0 : 7);
 	teamBitBoard = 0x00000000000000FF;
 	teamBitBoard <<= yPos;
 
