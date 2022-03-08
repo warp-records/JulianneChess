@@ -2,23 +2,28 @@
 #include "Gameboard.hpp"
 
 
-GameBoard::GameBoard() {}
-
-Bitboard GameBoard::genBitBoard() const {
-	/*for (auto pc = black.pieceList.begin(); pc != black.pieceList.end(); pc++)
-		board |= (*pc)->getBBoard();
-
-	for (auto pc = white.pieceList.begin(); pc != white.pieceList.end(); pc++)
-		board |= (*pc)->getBBoard();*/
-
+GameBoard::GameBoard() {
+	//get() just obtains the raw pointer value from the pointer wrapper
 	for (auto pieceItr = white.pieceList.begin(); pieceItr != white.pieceList.end(); pieceItr++)
-		board[(*pieceItr)->getPos().column][(*pieceItr)->getPos().row] = *pieceItr;
+		board[(*pieceItr)->getPos().column][(*pieceItr)->getPos().row] = pieceItr->get();
 
 	for (auto pieceItr = black.pieceList.begin(); pieceItr != black.pieceList.end(); pieceItr++)
-		board[(*pieceItr)->getPos().column][(*pieceItr)->getPos().row] = *pieceItr;
+		board[(*pieceItr)->getPos().column][(*pieceItr)->getPos().row] = pieceItr->get();
+
+}
 
 
-	return board;
+Bitboard GameBoard::genBitBoard() const {
+	Bitboard bb = 0x00;
+
+	for (auto pc = black.pieceList.begin(); pc != black.pieceList.end(); pc++)
+		bb |= (*pc)->getBBoard();
+
+	for (auto pc = white.pieceList.begin(); pc != white.pieceList.end(); pc++)
+		bb |= (*pc)->getBBoard();
+
+
+	return bb;
 }
 
 //GOD this is gonna be so slow

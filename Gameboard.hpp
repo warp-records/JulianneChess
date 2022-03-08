@@ -5,13 +5,13 @@
 #pragma once
 
 class GameBoard {
-	enum Color { Black, White }
+	enum Color { Black, White };
 
 	/*Note: if you copy this into another unique_ptr
 	(etc during move space searching), you'll get an
 	exception!*/
 
-	typedef std::unique_ptr<Piece> PiecePtr;
+	typedef std::shared_ptr<Piece> PiecePtr;
 
 
 	/*All this will take up a considerable chunk
