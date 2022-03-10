@@ -11,7 +11,7 @@ add_executable(Julianne Pieces/Knight.cpp)
 add_executable(Julianne Pieces/Pawn.cpp)
 
 
-set_property(TARGET Julianne PROPERTY CXX_STANDARD 17)
+set_property(TARGET Julianne PROPERTY CXX_STANDARD 20)
 
 
 

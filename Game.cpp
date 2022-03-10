@@ -6,5 +6,5 @@ Game::genMoves(Piece const& piece) {
 	  instruction*/
 
 	//This works for now I guess
-	if ()
+	//if ()
 };

@@ -3,26 +3,26 @@
 
 
 GameBoard::GameBoard() {
-	//get() just obtains the raw pointer value from the pointer wrapper
-	for (auto pieceItr = white.pieceList.begin(); pieceItr != white.pieceList.end(); pieceItr++)
-		board[(*pieceItr)->getPos().column][(*pieceItr)->getPos().row] = pieceItr->get();
 
-	for (auto pieceItr = black.pieceList.begin(); pieceItr != black.pieceList.end(); pieceItr++)
-		board[(*pieceItr)->getPos().column][(*pieceItr)->getPos().row] = pieceItr->get();
+	for (auto const& piece : white.pieceList)
+		board[piece->getPos().column][piece->getPos().row] = piece.get();
+
+	for (auto const& piece : white.pieceList)
+		board[piece->getPos().column][piece->getPos().row] = piece.get();
 
 }
 
 
 Bitboard GameBoard::genBitBoard() const {
 	Bitboard bb = 0x00;
-
+/*
 	for (auto pc = black.pieceList.begin(); pc != black.pieceList.end(); pc++)
 		bb |= (*pc)->getBBoard();
 
 	for (auto pc = white.pieceList.begin(); pc != white.pieceList.end(); pc++)
 		bb |= (*pc)->getBBoard();
 
-
+*/
 	return bb;
 }
 
@@ -34,7 +34,9 @@ GameBoard::Team::Team(Color _color) {
 	teamBitBoard = 0x00000000000000FF;
 	teamBitBoard <<= yPos;
 
-	pieceList = std::initializer_list<PiecePtr> {
+
+	//Since we can't list initialize unqiue pointers
+	std::array<Piece*, 8> tmpArr {{
 		new Pieces::King({4, yPos}),
 		new Pieces::Queen({3, yPos}),
 		new Pieces::Rook({0, yPos}),
@@ -43,7 +45,10 @@ GameBoard::Team::Team(Color _color) {
 		new Pieces::Bishop({5, yPos}),
 		new Pieces::Knight({6, yPos}),
 		new Pieces::Knight({1, yPos}),
-	};
+	}};
+
+	for (Piece* ptr : tmpArr)
+		pieceList.push_back(PiecePtr(ptr));
 
 	yPos = (color == White ? 1 : 6);
 	for (uint8_t i = 0; i < 8; i++)

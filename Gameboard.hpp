@@ -7,11 +7,10 @@
 class GameBoard {
 	enum Color { Black, White };
 
-	/*Note: if you copy this into another unique_ptr
-	(etc during move space searching), you'll get an
-	exception!*/
+	/*Having trouble using a unique_ptr while
+	iterating. Use shared_ptr will work for now.*/
 
-	typedef std::shared_ptr<Piece> PiecePtr;
+	typedef std::unique_ptr<Piece> PiecePtr;
 
 
 	/*All this will take up a considerable chunk
