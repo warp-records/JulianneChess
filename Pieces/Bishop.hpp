@@ -7,6 +7,9 @@ namespace Pieces {
 		PieceType const type = PieceType::Bishop;
 
 		Bitboard getMoveRange();
+		//Get directional ranges
+		std::array<Pos, 8> genAttackList(GameBoard const& gb);
+
 		operator std::string() const { return "Bishop"; }
 	};
 }

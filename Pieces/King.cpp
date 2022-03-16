@@ -48,4 +48,9 @@ namespace Pieces {
 	Bitboard King::getMoveRange() {
 		return MoveTables::King[pos.column][pos.row];
 	}
+
+	std::array<Pos, 8> King::genAttackList(GameBoard const& gb) {
+		//Implement later
+		return std::array<Pos, 8> {};
+	}
 }

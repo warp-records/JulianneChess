@@ -9,6 +9,8 @@ namespace Pieces {
 
 		
 		Bitboard getMoveRange();
+		std::array<Pos, 8> genAttackList(GameBoard const& gb);
+		
 		operator std::string() const { return "King"; }
 	};
 }
