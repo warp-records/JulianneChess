@@ -22,7 +22,7 @@ class GameBoard {
 		Keep a list of all pieces and a list of specific
 		piece types, for quicker lookup.*/
 		std::vector<PiecePtr> pieceList;
-		Bitboard teamBitBoard;
+		Bitboard bitBoard;
 
 		Team(Color _color);
 	};
@@ -35,6 +35,10 @@ class GameBoard {
 
 public:
 	GameBoard();
+
+	Bitboard getTeamBitBoard(Pieces::Color color) const { 
+		return color == Pieces::Color::Black ? black.bitBoard : white.bitBoard;
+	}
 
 	//For debugging purposes
 	Bitboard genBitBoard() const;

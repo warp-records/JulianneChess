@@ -25,9 +25,4 @@ namespace Pieces {
 
 		return moves;
 	}
-
-	std::array<Pos, 8> Pawn::genAttackList(GameBoard const& gb) {
-		//Implement later
-		return std::array<Pos, 8> {};
-	}
 }

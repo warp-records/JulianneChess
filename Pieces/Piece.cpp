@@ -1,8 +1,49 @@
 #include <cstdint>
 #include "Piece.hpp"
 
-Bitboard getMoveMap() {
-	
+bool operator!(Pieces::Color color) {
+	return color == static_cast<Pieces::Color>(false);
+}
+
+
+void Piece::genStraightMoveData() {
+
+	//THE PAGAN WINTER!
+
+	return;
+}
+
+void Piece::genDiagonalMoveData() { 
+
+	return; 
+}
+
+//Shift function: function for shifting tilemask
+template <typename ShiftFunct> Bitboard Piece::genValidRange() {
+	Bitboard rangeBoard = 0x00;
+	Bitboard tileMask = ShiftFunct(getBBoard());
+
+	//While tile mask is in range
+
+	while (tileMask) {
+		rangeBoard |= tileMask;
+
+		//Same team piece is on this space
+		if (tileMask & gameBoard->getTeamBoard(color)) {
+			rangeBoard ^= tileMask;
+
+			break;
+		} else if (tileMask & gameBoard->getTeamBoard(!color)) {
+			cache.attackList[cache.listLen] = { pos.column, pos.row };
+			cache.listLen++;
+			
+			break;
+		}
+
+		tileMask = ShiftFunct(tileMask);
+	};
+
+	return rangeBoard;
 }
 
 /*Bitboard Piece::straightMoves() {
