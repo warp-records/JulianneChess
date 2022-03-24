@@ -7,9 +7,12 @@ bool operator!(Pieces::Color color) {
 
 
 void Piece::genStraightMoveData() {
+	Bitboard rangeBoard = 0x00;
+	rangeBoard |= genValidRange([](Bitboard b) { return b << 8; }, 7 - pos.row);
 
 	//THE PAGAN WINTER!
 
+	
 	return;
 }
 
@@ -19,13 +22,13 @@ void Piece::genDiagonalMoveData() {
 }
 
 //Shift function: function for shifting tilemask
-template <typename ShiftFunct> Bitboard Piece::genValidRange() {
+template <typename Funct> Bitboard Piece::genValidRange(Funct shiftFunct, int iter) {
 	Bitboard rangeBoard = 0x00;
-	Bitboard tileMask = ShiftFunct(getBBoard());
+	Bitboard tileMask = shiftFunct(getBBoard());
 
 	//While tile mask is in range
 
-	while (tileMask) {
+	for (int i = 0; i < iter; i++) {
 		rangeBoard |= tileMask;
 
 		//Same team piece is on this space
@@ -40,7 +43,7 @@ template <typename ShiftFunct> Bitboard Piece::genValidRange() {
 			break;
 		}
 
-		tileMask = ShiftFunct(tileMask);
+		tileMask = shiftFunct(tileMask);
 	};
 
 	return rangeBoard;
