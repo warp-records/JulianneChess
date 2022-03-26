@@ -31,8 +31,8 @@ GameBoard::Team::Team(Color _color) {
 	Color color = _color;
 
 	uint8_t yPos = (color == White ? 0 : 7);
-	bitBoard = 0x00000000000000FF;
-	bitBoard <<= yPos;
+	teamBitBoard = 0x00000000000000FF;
+	teamBitBoard <<= yPos;
 
 
 	//Since we can't list initialize unqiue pointers

@@ -7,7 +7,8 @@ namespace Pieces {
 		PieceType const type = PieceType::Pawn;
 
 		Bitboard getMoveRange();
-				
+		std::array<Pos, 8> genAttackList(GameBoard const& gb);
+		
 		operator std::string() const { return "Pawn"; }
 	};
 }
