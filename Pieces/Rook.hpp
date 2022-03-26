@@ -11,8 +11,6 @@ namespace Pieces {
 
 		//Bitboard genCastle();
 		Bitboard getMoveRange();
-		std::array<Pos, 8> genAttackList(GameBoard const& gb);
-		
-		operator std::string() const { return "Rook"; }
+		operator std::string() const { return "Queen"; }
 	};
 }

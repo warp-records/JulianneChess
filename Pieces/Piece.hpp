@@ -1,13 +1,9 @@
 #include <vector>
-#include <array>
-//#include "Gameboard.hpp"
 #include "../Bitboard.hpp"
 #include "PieceMoveTables.hpp"
 
 #pragma once
 
-
-class GameBoard;
 
 /*Weird huh? It's an experimental code
 design I thought I'd try out, I guess
@@ -19,12 +15,11 @@ namespace Pieces {
 };
 
 //Pieces needed for move generation
-/*
 struct Boards {
+	Bitboard piece;
 	Bitboard ally;
 	Bitboard enemy;
 };
-*/
 
 struct Pos {
 	uint8_t column;
@@ -56,6 +51,8 @@ protected:
 		return bitboard;
 	}
 
+	void genAttackMap();
+
 	struct {
 		//Note: initialize per piece later
 		Bitboard allyIntersect = 0x00;
@@ -67,8 +64,6 @@ protected:
 public:	
 
 	virtual Bitboard getMoveRange() = 0;
-	virtual std::array<Pos, 8> genAttackList(GameBoard const& gb) = 0;
-
 	virtual operator std::string() const = 0;
 
 	Pos getPos() const { return pos; }
