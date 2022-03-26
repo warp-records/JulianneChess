@@ -1,7 +1,5 @@
 #include "Gameboard.hpp"
 
-#pragma once
-
 class Game {
 	GameBoard board;
 
