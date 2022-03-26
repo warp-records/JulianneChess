@@ -5,7 +5,6 @@
 #pragma once
 
 class GameBoard {
-	enum Color { Black, White };
 
 	/*Having trouble using a unique_ptr while
 	iterating. Use shared_ptr will work for now.*/
@@ -27,8 +26,8 @@ class GameBoard {
 		Team(Color _color);
 	};
 
-	Team black { Black };
-	Team white { White };
+	Team black { Color::Black };
+	Team white { Color::White };
 
 	//Board size is 64
 	std::array<std::array<Piece*, 8>, 8> board {};

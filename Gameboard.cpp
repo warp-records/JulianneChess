@@ -30,7 +30,7 @@ Bitboard GameBoard::genBitBoard() const {
 GameBoard::Team::Team(Color _color) {
 	Color color = _color;
 
-	uint8_t yPos = (color == White ? 0 : 7);
+	uint8_t yPos = (color == Color::White ? 0 : 7);
 	teamBitBoard = 0x00000000000000FF;
 	teamBitBoard <<= yPos;
 
@@ -50,7 +50,7 @@ GameBoard::Team::Team(Color _color) {
 	for (Piece* ptr : tmpArr)
 		pieceList.push_back(PiecePtr(ptr));
 
-	yPos = (color == White ? 1 : 6);
+	yPos = (color == Color::White ? 1 : 6);
 	for (uint8_t i = 0; i < 8; i++)
 		pieceList.push_back(PiecePtr(new Pieces::Pawn({i, yPos})));
 

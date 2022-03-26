@@ -8,18 +8,10 @@
 /*Weird huh? It's an experimental code
 design I thought I'd try out, I guess
 */
-namespace Pieces {
-	enum class PieceType { King, Queen, Rook,
-						 Bishop, Knight, Pawn };
-	enum class Color { Black, White };
-};
 
-//Pieces needed for move generation
-struct Boards {
-	Bitboard piece;
-	Bitboard ally;
-	Bitboard enemy;
-};
+enum class PieceType { King, Queen, Rook,
+						Bishop, Knight, Pawn };
+enum class Color { Black, White };
 
 struct Pos {
 	uint8_t column;
@@ -57,6 +49,7 @@ public:
 	virtual operator std::string() const = 0;
 
 	Pos getPos() const { return pos; }
+
 	Bitboard getBBoard() {
 		if (!bitboard) {
 			bitboard = genBBoard();
