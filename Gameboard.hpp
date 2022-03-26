@@ -37,4 +37,6 @@ public:
 
 	//For debugging purposes
 	Bitboard genBitBoard() const;
+
+	Bitboard getColorBoard(Color color);
 };

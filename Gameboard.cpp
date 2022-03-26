@@ -55,3 +55,7 @@ GameBoard::Team::Team(Color _color) {
 		pieceList.push_back(PiecePtr(new Pieces::Pawn({i, yPos})));
 
 }
+
+Bitboard GameBoard::getColorBoard(Color color) {
+	return color == Color::Black ? black.teamBitBoard : white.teamBitBoard;
+}
