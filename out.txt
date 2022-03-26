@@ -1,0 +1,7 @@
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/ultraman20/Programming/JulianneChess/.build
+Scanning dependencies of target Julianne
+[  9%] Building CXX object CMakeFiles/Julianne.dir/main.o
+[ 18%] Building CXX object CMakeFiles/Julianne.dir/Bitboard.o
+[ 27%] Building CXX object CMakeFiles/Julianne.dir/Gameboard.o
