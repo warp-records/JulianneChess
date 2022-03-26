@@ -51,16 +51,6 @@ protected:
 		return bitboard;
 	}
 
-	void genAttackMap();
-
-	struct {
-		//Note: initialize per piece later
-		Bitboard allyIntersect = 0x00;
-		Bitboard enemyInterset = 0x00;
-		bool valid = false;
-
-	} cache;
-
 public:	
 
 	virtual Bitboard getMoveRange() = 0;
@@ -75,13 +65,4 @@ public:
 		return bitboard;
 	}
 
-	Bitboard getMoveMap() {};
-	//Generate a bitboard from a position
-
-	//Bench straight moves to see how it compares to
-	//a lookup table
-	/*
-	Bitboard straightMoves();
-	Bitboard diagonalMoves();
-	*/
 };
