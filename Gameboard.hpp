@@ -1,59 +1,16 @@
 
-#include "Pieces.hpp"
-
 #include <vector>
 #include <memory>
 #include <array>
-//#include "Gameboard.hpp"
 #include "Bitboard.hpp"
 
-#pragma once
-
-class Piece;
-
-class GameBoard {
-	enum Color { Black, White };
-
-	/*Having trouble using a unique_ptr while
-	iterating. Use shared_ptr will work for now.*/
-
-	typedef std::unique_ptr<Piece> PiecePtr;
-
-
-	/*All this will take up a considerable chunk
-	of memory... you may need to move to heap
-	to prevent a stack overflow*/
-	struct Team {
-		Color color;
-		/*Optimize later, after getting a working product.
-		Keep a list of all pieces and a list of specific
-		piece types, for quicker lookup.*/
-		std::vector<PiecePtr> pieceList;
-		Bitboard bitBoard;
-
-		Team(Color _color);
-	};
-
-	Team black { Black };
-	Team white { White };
-
-	//Board size is 64
-	std::array<std::array<Piece*, 8>, 8> board {};
-
-public:
-	GameBoard();
-
-	Bitboard getTeamBitBoard(Pieces::Color color) const { 
-		return color == Pieces::Color::Black ? black.bitBoard : white.bitBoard;
-	}
-
-	//For debugging purposes
-	Bitboard genBitBoard() const;
-};
+//#pragma once
 
 /*Weird huh? It's an experimental code
 design I thought I'd try out, I guess
 */
+#ifndef _PIECE_MISC
+#define _PIECE_MISC
 namespace Pieces {
 	enum class PieceType { King, Queen, Rook,
 						 Bishop, Knight, Pawn };
@@ -63,14 +20,7 @@ namespace Pieces {
 	//For some reason this needs to be defined :eye_roll:
 };
 
-
-//Pieces needed for move generation
-/*
-struct Boards {
-	Bitboard ally;
-	Bitboard enemy;
-};
-*/
+Pieces::Color operator!(Pieces::Color color);
 
 struct Pos {
 	uint8_t column;
@@ -84,14 +34,23 @@ struct Pos {
 		return str;
 	} 
 };
+#endif
 
 
+#ifndef _CHESS_GAMEBOARD
+class GameBoard;
 
+#endif
 
+#ifndef _PIECE
+class Piece;
 
+#endif
 
 /*This really should be inside the Pieces namespace,
 but adding it would screw with a lot of code*/
+#ifndef _PIECE
+#define _PIECE
 class Piece {
 protected:
 	//A little hacky, but IT'LL WORK... Trust me!
@@ -164,3 +123,47 @@ public:
 	Bitboard diagonalMoves();
 	*/
 };
+
+#endif
+
+#ifndef _CHESS_GAMEBOARD
+#define _CHESS_GAMEBOARD
+class GameBoard {
+
+	/*Having trouble using a unique_ptr while
+	iterating. Use shared_ptr will work for now.*/
+
+	typedef std::unique_ptr<Piece> PiecePtr;
+
+
+	/*All this will take up a considerable chunk
+	of memory... you may need to move to heap
+	to prevent a stack overflow*/
+	struct Team {
+		Pieces::Color color;
+		/*Optimize later, after getting a working product.
+		Keep a list of all pieces and a list of specific
+		piece types, for quicker lookup.*/
+		std::vector<PiecePtr> pieceList;
+		Bitboard bitBoard;
+
+		Team(Pieces::Color _color);
+	};
+
+	Team black { Pieces::Color::Black };
+	Team white { Pieces::Color::White };
+
+	//Board size is 64
+	std::array<std::array<Piece*, 8>, 8> board {};
+
+public:
+	GameBoard();
+
+	Bitboard getTeamBitBoard(Pieces::Color color) const { 
+		return color == Pieces::Color::Black ? black.bitBoard : white.bitBoard;
+	}
+
+	//For debugging purposes
+	Bitboard genBitBoard() const;
+};
+#endif

@@ -1,6 +1,8 @@
 
 #include "Gameboard.hpp"
+#include "Pieces.hpp"
 
+GameBoard* Piece::gameBoard = nullptr;
 
 GameBoard::GameBoard() {
 
@@ -27,10 +29,10 @@ Bitboard GameBoard::genBitBoard() const {
 }
 
 //GOD this is gonna be so slow
-GameBoard::Team::Team(Color _color) {
-	Color color = _color;
+GameBoard::Team::Team(Pieces::Color _color) {
+	Pieces::Color color = _color;
 
-	uint8_t yPos = (color == White ? 0 : 7);
+	uint8_t yPos = (color == Pieces::Color::White ? 0 : 7);
 	bitBoard = 0x00000000000000FF;
 	bitBoard <<= yPos;
 
@@ -50,7 +52,7 @@ GameBoard::Team::Team(Color _color) {
 	for (Piece* ptr : tmpArr)
 		pieceList.push_back(PiecePtr(ptr));
 
-	yPos = (color == White ? 1 : 6);
+	yPos = (color == Pieces::Color::White ? 1 : 6);
 	for (uint8_t i = 0; i < 8; i++)
 		pieceList.push_back(PiecePtr(new Pieces::Pawn({i, yPos})));
 

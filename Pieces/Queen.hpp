@@ -1,10 +1,13 @@
 #include "../Gameboard.hpp"
+#include "PieceMoveTables.hpp"
+
+#pragma once
 
 namespace Pieces {
 	struct Queen : public Piece {
 		Queen(Pos _pos) { pos = _pos; };
 
-		PieceType const type = PieceType::Queen;
+		Pieces::PieceType const type = Pieces::PieceType::Queen;
 
 		Bitboard getMoveRange();
 
