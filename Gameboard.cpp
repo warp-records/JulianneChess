@@ -37,14 +37,14 @@ GameBoard::Team::Team(Color _color) {
 
 	//Since we can't list initialize unqiue pointers
 	std::array<Piece*, 8> tmpArr {{
-		new Pieces::King({4, yPos}),
-		new Pieces::Queen({3, yPos}),
-		new Pieces::Rook({0, yPos}),
-		new Pieces::Rook({7, yPos}),
-		new Pieces::Bishop({2, yPos}),
-		new Pieces::Bishop({5, yPos}),
-		new Pieces::Knight({6, yPos}),
-		new Pieces::Knight({1, yPos}),
+		new Pieces::King(color, {4, yPos}),
+		new Pieces::Queen(color, {3, yPos}),
+		new Pieces::Rook(color, {0, yPos}),
+		new Pieces::Rook(color, {7, yPos}),
+		new Pieces::Bishop(color, {2, yPos}),
+		new Pieces::Bishop(color, {5, yPos}),
+		new Pieces::Knight(color, {6, yPos}),
+		new Pieces::Knight(color, {1, yPos}),
 	}};
 
 	for (Piece* ptr : tmpArr)
@@ -52,10 +52,10 @@ GameBoard::Team::Team(Color _color) {
 
 	yPos = (color == Color::White ? 1 : 6);
 	for (uint8_t i = 0; i < 8; i++)
-		pieceList.push_back(PiecePtr(new Pieces::Pawn({i, yPos})));
+		pieceList.push_back(PiecePtr(new Pieces::Pawn(color, {i, yPos})));
 
 }
 
-Bitboard GameBoard::getColorBoard(Color color) {
+Bitboard GameBoard::getColorBoard(Color color) const {
 	return color == Color::Black ? black.teamBitBoard : white.teamBitBoard;
 }

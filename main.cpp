@@ -95,27 +95,27 @@ int main() {
 
 		switch (in) {
 			case 0:
-				piece = new Pieces::King(pos);
+				piece = new Pieces::King(Color::White, pos);
 				break;
 
 			case 1:
-				piece = new Pieces::Queen(pos);
+				piece = new Pieces::Queen(Color::White, pos);
 				break;
 
 			case 2:
-				piece = new Pieces::Rook(pos);
+				piece = new Pieces::Rook(Color::White, pos);
 				break;
 
 			case 3:
-				piece = new Pieces::Bishop(pos);
+				piece = new Pieces::Bishop(Color::White, pos);
 				break;
 
 			case 4:
-				piece = new Pieces::Knight(pos);
+				piece = new Pieces::Knight(Color::White, pos);
 				break;
 
 			case 5:
-				piece = new Pieces::Pawn(pos);
+				piece = new Pieces::Pawn(Color::White, pos);
 				break;
 		}
 

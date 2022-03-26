@@ -30,6 +30,7 @@ struct Pos {
 but adding it would screw with a lot of code*/
 class Piece {
 protected:
+	Color _color;
 
 	Pos pos;
 	//This will be invalidated when the 
@@ -58,4 +59,8 @@ public:
 		return bitboard;
 	}
 
+	Color color() { return _color; }
+
+	Piece(Color _arg_color, Pos _pos) : 
+	_color{_arg_color}, pos{_pos} {}; 
 };

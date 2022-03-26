@@ -2,7 +2,7 @@
 
 namespace Pieces {
 	struct Bishop : public Piece {
-		Bishop(Pos _pos) { pos = _pos; };
+		using Piece::Piece;
 
 		PieceType const type = PieceType::Bishop;
 

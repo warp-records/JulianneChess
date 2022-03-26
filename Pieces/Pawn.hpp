@@ -2,7 +2,7 @@
 
 namespace Pieces {
 	struct Pawn : public Piece {
-		Pawn(Pos _pos) { pos = _pos; };
+		using Piece::Piece;
 
 		PieceType const type = PieceType::Pawn;
 

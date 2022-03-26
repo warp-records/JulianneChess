@@ -2,7 +2,8 @@
 
 namespace Pieces {
 	struct Knight : public Piece {
-		Knight(Pos _pos) { pos = _pos; };
+		using Piece::Piece;
+
 		bool canCastle = true;
 
 		PieceType const type = PieceType::Knight;

@@ -2,7 +2,7 @@
 
 namespace Pieces {
 	struct Queen : public Piece {
-		Queen(Pos _pos) { pos = _pos; };
+		using Piece::Piece;
 
 		PieceType const type = PieceType::Queen;
 

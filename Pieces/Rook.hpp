@@ -2,7 +2,8 @@
 
 namespace Pieces {
 	struct Rook : public Piece {
-		Rook(Pos _pos) { pos = _pos; };
+		using Piece::Piece;
+
 		/*Permanently set to false if piece has 
 		moved and / or castled*/
 		bool canCastle = true;
