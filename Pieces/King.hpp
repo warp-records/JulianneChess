@@ -1,4 +1,4 @@
-#include "../Gameboard.hpp"
+#include "Piece.hpp"
 
 namespace Pieces {
 	struct King : public Piece {
