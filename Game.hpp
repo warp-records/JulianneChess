@@ -3,10 +3,10 @@
 #include "Piece.hpp"
 
 class Game {
-	GameBoard board;
+	GameBoard gameBoard;
 
 	//<Piece move map bitboard, piece attack possibilities
-	
+
 	using PieceMoveData = std::pair<Bitboard, 
 		std::array<8, Pos>>;
 
