@@ -4,7 +4,7 @@
 #include "Pieces/PieceMoveTables.hpp"
 
 
-Game::genMoves(Piece const& piece) {
+void Game::genMoves(Piece const& piece) {
 
 	//This works for now I guess
 	//if ()
@@ -13,26 +13,29 @@ Game::genMoves(Piece const& piece) {
 /*Consdier using a hardware accelerated approach later*/
 
 PieceMoveData Game::genStraightData(Piece const& piece) const {
+
 	//Change later
-	std::array<8, Pos> moveData = {{NONE, NONE, NONE, NONE,
-							 NONE, NONE, NONE, NONE}};
+	Bitboard moveRange = 0x00;
+	std::array<Pos, 8> attacks = {{POS_NONE, POS_NONE, POS_NONE, POS_NONE,
+							 POS_NONE, POS_NONE, POS_NONE, POS_NONE}};
 	//...
-	return std::make_pair(moveRange, std::array<8, Pos> {{0, 0}});
+	return std::make_pair(moveRange, attacks);
 }
 
 PieceMoveData Game::genDiagonalData(Piece const& piece) const {
-	std::array<8, Pos> moveData = {{NONE, NONE, NONE, NONE,
-						 NONE, NONE, NONE, NONE}};
+	Bitboard moveRange = 0x00;
+	std::array<Pos, 8> attacks = {{POS_NONE, POS_NONE, POS_NONE, POS_NONE,
+							 POS_NONE, POS_NONE, POS_NONE, POS_NONE}};
 	//...
-	return std::make_pair(0x00, std::array<8, Pos> {{0, 0}});
+	return std::make_pair(moveRange, attacks);
 }
 
 
 //<Bitboard move, (optional) attack position>
 /*Wether to use MSB or use LSB for finding
 the nearest intersected piece*/
-std::pair<Bitboard, std::optional<Pos>> getMoveDataPart(Bitboard rangePart, bool useMSB) {
-	Bitboard rangePart = piece.getMoveRange();
+std::pair<Bitboard, std::optional<Pos>> 
+	Game::genMoveDataPart(Bitboard rangePart, bool useMSB) const {
 
 		/*Select the closest piece to the piece
 	we are generating move data for...*/
@@ -48,15 +51,15 @@ std::pair<Bitboard, std::optional<Pos>> getMoveDataPart(Bitboard rangePart, bool
 	targetPiece &= gameBoard.getWholeBoard();
 
 	if (!targetPiece)
-		std::make_pair(rangePart, std::null_opt);
+		std::make_pair(rangePart, std::nullopt);
 
 
-	Bitboard rangePartIdx = MSB ? 
+	Bitboard rangePartIdx = useMSB ? 
 			63 - std::countl_zero(rangePart) 
 				: std::countr_zero(rangePart);
 
 
-	Bitboard clipMask = piece.getMoveRange();
+	Bitboard clipMask = rangePart;
 
 	if (useMSB) {
 		clipMask <<= targetBitIdx - rangePartIdx;
@@ -66,14 +69,9 @@ std::pair<Bitboard, std::optional<Pos>> getMoveDataPart(Bitboard rangePart, bool
 
 	rangePart &= ~clipMask;
 
-	if (targetPiece & gameBoard.getColorBoard(piece.color())) {
-		//We can't attack it since it's 
-
-		std::make_pair(rangePart ^ targetPiece, std::null_opt);
-	} else {
-
-		//x >> 3 divides x by 8 and discards remainder
-		std::make_pair(rangePart,
-		 std::make_optional<Pos>({ targetPieceIdx % 8, targetPieceIdx >> 3 }));
-	}
+	//x >> 3 divides x by 8 and discards remainder
+	return std::make_pair(
+				rangePart,
+				std::make_optional<Pos>(Pos {targetBitIdx % 8, targetBitIdx >> 3})
+			);
 }
