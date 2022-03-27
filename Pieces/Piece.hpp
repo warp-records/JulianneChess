@@ -13,6 +13,8 @@ enum class PieceType { King, Queen, Rook,
 						Bishop, Knight, Pawn };
 enum class Color { Black, White };
 
+Color operator!(Color color);
+
 struct Pos {
 	uint8_t column;
 	uint8_t row;
