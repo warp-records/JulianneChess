@@ -1,5 +1,6 @@
 #include <bit>
 #include <optional>
+#include <array>
 #include "Game.hpp"
 #include "Pieces/PieceMoveTables.hpp"
 
@@ -8,17 +9,44 @@ void Game::genMoves(Piece const& piece) {
 
 	//This works for now I guess
 	//if ()
-};
+}
 
 /*Consdier using a hardware accelerated approach later*/
 
 PieceMoveData Game::genStraightData(Piece const& piece) const {
 
+	std::array<MoveTable const*, 4> constexpr straightRangeTables {{
+		&Pieces::MoveTables::upStraight,
+		&Pieces::MoveTables::downStraight,
+		&Pieces::MoveTables::rightStraight,
+		&Pieces::MoveTables::leftStraight
+	}};
+
 	//Change later
 	Bitboard moveRange = 0x00;
-	std::array<Pos, 8> attacks = {{POS_NONE, POS_NONE, POS_NONE, POS_NONE,
-							 POS_NONE, POS_NONE, POS_NONE, POS_NONE}};
-	//...
+	
+	uint8_t numAttacks = 0;
+
+	std::array<Pos, 8> attacks {{ POS_NONE, POS_NONE, POS_NONE, POS_NONE,
+						POS_NONE, POS_NONE, POS_NONE, POS_NONE }};
+
+	bool spanUp = true;
+	for (MoveTable const* table : straightRangeTables) {
+		/*std::pair which contains:
+		  Bitboard of valid moves
+		  optional intersected piece pos*/
+		auto movePartData = genMoveDataPart((*table)[piece.getPos().column][piece.getPos().row], spanUp);
+		//Every other move is span
+		spanUp = !spanUp;
+
+		moveRange |= movePartData.first;
+
+		if (movePartData.second) {
+			attacks[numAttacks] = movePartData.second.value();
+			numAttacks++;
+		}
+	}
+
 	return std::make_pair(moveRange, attacks);
 }
 
@@ -35,11 +63,11 @@ PieceMoveData Game::genDiagonalData(Piece const& piece) const {
 /*Wether to use MSB or use LSB for finding
 the nearest intersected piece*/
 std::pair<Bitboard, std::optional<Pos>> 
-	Game::genMoveDataPart(Bitboard rangePart, bool useMSB) const {
+	Game::genMoveDataPart(Bitboard rangePart, bool spansUp) const {
 
 		/*Select the closest piece to the piece
 	we are generating move data for...*/
-	uint8_t targetBitIdx = useMSB ? 
+	uint8_t targetBitIdx = spansUp ? 
 			63 - std::countl_zero(rangePart) : std::countr_zero(rangePart);
 
 
@@ -54,14 +82,14 @@ std::pair<Bitboard, std::optional<Pos>>
 		std::make_pair(rangePart, std::nullopt);
 
 
-	Bitboard rangePartIdx = useMSB ? 
+	Bitboard rangePartIdx = spansUp ? 
 			63 - std::countl_zero(rangePart) 
 				: std::countr_zero(rangePart);
 
 
 	Bitboard clipMask = rangePart;
 
-	if (useMSB) {
+	if (spansUp) {
 		clipMask <<= targetBitIdx - rangePartIdx;
 	} else {
 		clipMask >>= rangePartIdx - targetBitIdx;
