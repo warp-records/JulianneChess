@@ -193,10 +193,31 @@ PieceMoveData Game::genKnightData(Piece const& piece) const {
 }
 
 PieceMoveData Game::genPawnData(Piece const& piece) const {
+	PieceData data;
+
 	if (piece.type != PieceType::Pawn)
 		throw std::exception();
-	//...
-	return PieceMoveData();
+
+	Bitboard moveRange = 0x00;
+
+	if (!(piece.getBBoard() << 8 & gameBoard.getWholeBoard()))
+		moveRange |= piece.getBBoard() << 8;
+
+	if (piece.getBBoard() << 7 & gameBoard.getColorBoard(!piece.color()) &&
+		piece.getPos().column < 7) {
+
+		moveRange |= piece.getBBoard() << 7;
+		data.second[0] = { piece.getPos().column + 1, piece.getPos().row + 1  };
+	}
+
+	if (piece.getBBoard() << 9 & gameBoard.getColorBoard(!piece.color()) &&
+			piece.getPos().column > 0) {
+
+		moveRange |= piece.getBBoard() << 7;
+		data.second[1] = { piece.getPos().column + 1, piece.getPos().row + 1  };
+	}
+
+	return data;
 }
 
 PieceMoveData Game::genKingData(Piece const& piece) const  {
