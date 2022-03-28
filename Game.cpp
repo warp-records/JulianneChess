@@ -10,16 +10,17 @@
 //who cares ig youll like figure it out or sum
 //if you wanna read it XD
 PieceMoveData Game::genMoves(Piece const& piece) {
-	PieceMoveData data;
-
 
 	switch (piece.type) {
+
 		case (PieceType::King) : {
-			//...
+			return genKingData(piece);
 			break;
 		}
 
 		case (PieceType::Queen) : {
+			PieceMoveData data;
+
 			//Generate move data for both straight and diagonal moves
 			std::pair<PieceMoveData, PieceMoveData> dataParts =
 				std::make_pair(genStraightData(piece), genDiagonalData(piece));
@@ -39,28 +40,30 @@ PieceMoveData Game::genMoves(Piece const& piece) {
 		}
 
 		case (PieceType::Rook) : {
-			data = genStraightData(piece);
+			return genStraightData(piece);
 			break;
 		}
 
 		case (PieceType::Bishop) : {
-			data = genDiagonalData(piece);
+			return genDiagonalData(piece);
 			break;
 		}
 
 		case (PieceType::Knight) : {
-			//...
+			return genKnightData(piece);
 			break;
 		}
 
 		case (PieceType::Pawn) : {
-			//...
+			return genPawnData(piece);
 			break;
 		}
 	}
-
-	return data;
 }
+
+
+
+
 
 PieceMoveData Game::genStraightData(Piece const& piece) const {
 
@@ -177,4 +180,28 @@ std::pair<Bitboard, std::optional<Pos>>
 				rangePart,
 				std::make_optional<Pos>(Pos {targetBitIdx % 8, targetBitIdx >> 3})
 			);
+}
+
+
+
+
+PieceMoveData Game::genKnightData(Piece const& piece) const {
+	if (piece.type != PieceType::Knight)
+		throw std::exception();
+	//...
+	return PieceMoveData();
+}
+
+PieceMoveData Game::genPawnData(Piece const& piece) const {
+	if (piece.type != PieceType::Pawn)
+		throw std::exception();
+	//...
+	return PieceMoveData();
+}
+
+PieceMoveData Game::genKingData(Piece const& piece) const  {
+	if (piece.type != PieceType::Pawn)
+		throw std::exception();
+	//...
+	return PieceMoveData();
 }

@@ -15,11 +15,16 @@ class Game {
 
 	//Generate movespace and attack possibilities pair
 	PieceMoveData genStraightData(Piece const& piece) const;
-
 	PieceMoveData genDiagonalData(Piece const& piece) const;
+
+	PieceMoveData genKnightData(Piece const& piece) const;
+	PieceMoveData genPawnData(Piece const& piece) const;
+	PieceMoveData genKingData(Piece const& piece) const;
+
 
 	/*Generate movespace and attack possibilities given
 	a move part range, and wether it points upwards or downwards*/
+	//Note: test for check later to prevent pinned pieces from moving
 	std::pair<Bitboard, std::optional<Pos>> 
 		genMoveDataPart(Bitboard rangePart, bool spanUp) const;
 };
