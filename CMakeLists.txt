@@ -11,10 +11,8 @@ add_executable(Julianne Pieces/King.cpp)
 add_executable(Julianne Pieces/Knight.cpp)
 add_executable(Julianne Pieces/Pawn.cpp)
 
-
 set_property(TARGET Julianne PROPERTY CXX_STANDARD 20)
-
-
-
-
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
+
+#[[Required for C++ 20 standard]]
+cmake_minimum_required(VERSION 3.2.0)
