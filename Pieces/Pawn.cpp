@@ -3,7 +3,8 @@
 
 namespace Pieces {
 
-	Bitboard Pawn::getMoveRange() {
+	//Kind of irrelevant now
+	Bitboard Pawn::getMoveRange() const {
 
 		Bitboard moves = 0x8000;
 

@@ -6,7 +6,7 @@ namespace Pieces {
 
 		PieceType const type = PieceType::Pawn;
 
-		Bitboard getMoveRange();
+		Bitboard getMoveRange() const;
 		operator std::string() const { return "Pawn"; }
 	};
 }

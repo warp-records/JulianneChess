@@ -11,7 +11,7 @@ namespace Pieces {
 		PieceType const type = PieceType::Rook;
 
 		//Bitboard genCastle();
-		Bitboard getMoveRange();
+		Bitboard getMoveRange() const;
 		operator std::string() const { return "Queen"; }
 	};
 }

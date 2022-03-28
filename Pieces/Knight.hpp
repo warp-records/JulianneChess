@@ -8,7 +8,7 @@ namespace Pieces {
 
 		PieceType const type = PieceType::Knight;
 
-		Bitboard getMoveRange();
+		Bitboard getMoveRange() const;
 
 		operator std::string() const { return "Knight"; }
 	};

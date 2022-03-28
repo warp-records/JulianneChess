@@ -35,34 +35,20 @@ protected:
 	Color _color;
 
 	Pos pos;
-	//This will be invalidated when the 
-	//piece moves. Change later.
-	Bitboard bitboard = 0x00;
-
-	Bitboard genBBoard() {
-		bitboard = 0x1;
-		bitboard <<= (pos.row*8 + 7 - pos.column);
-
-		return bitboard;
-	}
 
 public:	
 	PieceType const type = PieceType::PIECE_TYPE_BASE;
 
-	virtual Bitboard getMoveRange() = 0;
+	virtual Bitboard getMoveRange() const = 0;
 	virtual operator std::string() const = 0;
 
 	Pos getPos() const { return pos; }
 
-	Bitboard getBBoard() {
-		if (!bitboard) {
-			bitboard = genBBoard();
-		}
-
-		return bitboard;
+	Bitboard getBBoard() const {
+		return 1 << (pos.row*8 + 7 - pos.column);
 	}
 
-	Color color() { return _color; }
+	Color color() const { return _color; }
 
 	Piece(Color _arg_color, Pos _pos) : 
 	_color{_arg_color}, pos{_pos} {}; 

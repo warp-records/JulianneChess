@@ -3,7 +3,7 @@
 
 namespace Pieces {
 
-	Bitboard Bishop::getMoveRange() {
+	Bitboard Bishop::getMoveRange() const {
 		return MoveTables::Bishop[pos.column][pos.row];
 	}
 }
