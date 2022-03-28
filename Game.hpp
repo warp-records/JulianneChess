@@ -11,14 +11,15 @@ class Game {
 
 	//<Piece move map bitboard, piece attack possibilities
 	static Pos constexpr POS_NONE = { 0xFF, 0xFF };
-	void genMoves(Piece const& piece);
+	PieceMoveData genMoves(Piece const& piece);
 
-	//Generate move and attack possibilities
-
+	//Generate movespace and attack possibilities pair
 	PieceMoveData genStraightData(Piece const& piece) const;
 
 	PieceMoveData genDiagonalData(Piece const& piece) const;
 
-std::pair<Bitboard, std::optional<Pos>> 
-	genMoveDataPart(Bitboard rangePart, bool useMSB) const;
+	/*Generate movespace and attack possibilities given
+	a move part range, and wether it points upwards or downwards*/
+	std::pair<Bitboard, std::optional<Pos>> 
+		genMoveDataPart(Bitboard rangePart, bool spanUp) const;
 };

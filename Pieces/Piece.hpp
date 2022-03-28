@@ -10,7 +10,7 @@ design I thought I'd try out, I guess
 */
 
 enum class PieceType { King, Queen, Rook,
-						Bishop, Knight, Pawn };
+						Bishop, Knight, Pawn, PIECE_TYPE_BASE };
 enum class Color { Black, White };
 
 Color operator!(Color color);
@@ -47,6 +47,7 @@ protected:
 	}
 
 public:	
+	PieceType const type = PieceType::PIECE_TYPE_BASE;
 
 	virtual Bitboard getMoveRange() = 0;
 	virtual operator std::string() const = 0;
