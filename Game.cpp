@@ -188,17 +188,28 @@ std::pair<Bitboard, std::optional<Pos>>
 PieceMoveData Game::genKnightData(Piece const& piece) const {
 	if (piece.type != PieceType::Knight)
 		throw std::exception();
-	//...
-	return PieceMoveData();
+	
+	PieceMoveData data;
+	Bitboard moveRange;
+
+	data.first = piece.getMoveRange() ^ gameBoard.getColorBoard(piece.color());
+	Bitboard enemyIntersect = piece.getMoveRange() & gameBoard.getColorBoard(!piece.color());
+
+	for (int i = 0; enemyIntersect != 0x00 && i < 8; i++) {
+		data.second[i] = { std::countr_zero(enemyIntersect) % 8, 
+							std::countr_zero(enemyIntersect) >> 8 };
+	}
+
+	return data;
 }
 
 PieceMoveData Game::genPawnData(Piece const& piece) const {
-	PieceData data;
-
 	if (piece.type != PieceType::Pawn)
 		throw std::exception();
 
+	PieceMoveData data;
 	Bitboard moveRange = 0x00;
+
 
 	if (!(piece.getBBoard() << 8 & gameBoard.getWholeBoard()))
 		moveRange |= piece.getBBoard() << 8;
@@ -221,8 +232,18 @@ PieceMoveData Game::genPawnData(Piece const& piece) const {
 }
 
 PieceMoveData Game::genKingData(Piece const& piece) const  {
-	if (piece.type != PieceType::Pawn)
+	if (piece.type != PieceType::King)
 		throw std::exception();
-	//...
-	return PieceMoveData();
+	
+	PieceMoveData data;
+
+	data.first = piece.getMoveRange() & ~gameBoard.getColorBoard(piece.color());
+	Bitboard enemyIntersect = piece.getMoveRange() & gameBoard.getColorBoard(!piece.color());
+
+	for (int i = 0; enemyIntersect != 0x00 && i < 8; i++) {
+		data.second[i] = { std::countr_zero(enemyIntersect) % 8, 
+							std::countr_zero(enemyIntersect) >> 8 };
+	}
+
+	return data;
 }
