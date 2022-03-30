@@ -26,6 +26,9 @@ PieceMoveData Game::genMoves(Piece const& piece) {
 				std::make_pair(genStraightData(piece), genDiagonalData(piece));
 
 
+			//Combine the movespace of both ranges
+			data.first = dataParts.first.first | dataParts.second.first;
+
 			/*Then, copy the attack data from both parts into
 			  the final data*/
 			std::copy(dataParts.first.second.begin(), 
@@ -33,9 +36,6 @@ PieceMoveData Game::genMoves(Piece const& piece) {
 
 			std::copy(dataParts.second.second.begin(), 
 				dataParts.second.second.end(), data.second.begin() + 4);
-
-			//Finally, combine the movespace bitboards of both
-			data.first = dataParts.first.first | dataParts.second.first;
 			break;
 		}
 
@@ -67,7 +67,7 @@ PieceMoveData Game::genMoves(Piece const& piece) {
 
 PieceMoveData Game::genStraightData(Piece const& piece) const {
 
-	//Note: THE ORDER OF THESE MATTERS!
+	//Note: THE ORDER OF THESE MATTERS for the loop to work!
 	std::array<MoveTable const*, 4> constexpr straightRangeTables {{
 		&Pieces::MoveTables::upStraight,
 		&Pieces::MoveTables::downStraight,
@@ -121,7 +121,7 @@ PieceMoveData Game::genDiagonalData(Piece const& piece) const {
 
 	bool spanUp = true;
 
-	for (MoveTable const* table :diagonalRangeTables) {
+	for (MoveTable const* table : diagonalRangeTables) {
 		auto movePartData = genMoveDataPart((*table)[piece.getPos().column][piece.getPos().row], spanUp);
 		//Every other move is span
 		spanUp = !spanUp;

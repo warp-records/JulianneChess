@@ -4,7 +4,7 @@
 #include "Pieces.hpp"
 #include "Gameboard.hpp"
 
-#define VERSION "0.2.0"
+#define VERSION "0.2.1"
 
 //Some reason this doesn't link when placed in Piece.hpp or Piece.cpp
 std::ostream& operator<<(std::ostream& os, Pos pos) {
