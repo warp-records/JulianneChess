@@ -2,7 +2,7 @@
 #include <string>
 #include <optional>
 #include "Pieces.hpp"
-#include "Gameboard.hpp"
+#include "Game.hpp"
 
 #define VERSION "0.2.1"
 
@@ -50,77 +50,27 @@ int main() {
  	" /_____\\\n" <<
 	"[_______]\n" << std::endl;
 
-	GameBoard board;
-
-	outBitBoard(std::cout, board.genBitBoard());
+	Game game;
 	
 	
 	while (true) {
-		char in;
+		outBitBoard(std::cout, game.getBitBoard());
 
-		std::cout << "Select a piece type:\n\n" <<
-		"0 - King\n" <<
-		"1 - Queen\n" <<
-		"2 - Rook\n" <<
-		"3 - Bishop\n" <<
-		"4 - Knight\n" <<
-		"5 - Pawn\n" << 
-		"6 - Quit\n\n> " << std::flush;
+		Pos piecePos;
 
-		std::cin >> in;
-		in -= '0';
-
-		if (!std::cin.good() || !(0 <= in && in <= 6)) {
-			std::cerr << "Error" << std::endl;
-			return -1;
-		}
-
-		//Quit program
-		if (in == 6)
-			return 0;
+		std::cout << "Position of piece to move:" << std::endl;
+		std::cin >> piecePos;
 
 
-		std::cout << "\n\nEnter a position (A1 - H8):\n> "
-		<< std::flush;
+		Pos endPos;
 
-		Pos pos { 0, 0 };
-		std::cin >> pos;
+		std::cout << "Move piece to:" << std::endl;
+		std::cin >> endPos;
+
+		
+		game.movePiece(piecePos, endPos);
 
 		std::cout <<  "\n\n";
 
-		//I have no clue how else I can do this god damn it this is weird
-		Piece* piece = nullptr;
-
-		bool quitFlag = false;
-
-		switch (in) {
-			case 0:
-				piece = new Pieces::King(Color::White, pos);
-				break;
-
-			case 1:
-				piece = new Pieces::Queen(Color::White, pos);
-				break;
-
-			case 2:
-				piece = new Pieces::Rook(Color::White, pos);
-				break;
-
-			case 3:
-				piece = new Pieces::Bishop(Color::White, pos);
-				break;
-
-			case 4:
-				piece = new Pieces::Knight(Color::White, pos);
-				break;
-
-			case 5:
-				piece = new Pieces::Pawn(Color::White, pos);
-				break;
-		}
-
-		outBitBoard(std::cout, piece->getMoveRange(), false);
-
-		delete piece;
 	}
 }
