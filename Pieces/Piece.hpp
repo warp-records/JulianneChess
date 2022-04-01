@@ -25,7 +25,9 @@ struct Pos {
 		str += '0' + column;
 
 		return str;
-	} 
+	}
+
+	Bitboard asBitBoard() const { return 0b1 << (row*8 + 7 - column); }
 };
 
 /*This really should be inside the Pieces namespace,
@@ -45,7 +47,7 @@ public:
 	Pos getPos() const { return pos; }
 
 	Bitboard getBBoard() const {
-		return 1 << (pos.row*8 + 7 - pos.column);
+		pos.asBitBoard();
 	}
 
 	Color color() const { return _color; }

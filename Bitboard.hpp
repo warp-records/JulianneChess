@@ -18,12 +18,15 @@ not sure if that's how it works exactly.
 */
 
 
+/*Consider making this a struct, and define common
+transformation methods like so:
+forward()
+left()
+right()
 
-//800DB CLOUD!
-
-
+transform(x, y)
+*/
 typedef uint64_t Bitboard;
-//STUPID HORSE I JUST FELL OUT OF THE PORSCHE
 
 
 

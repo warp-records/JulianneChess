@@ -35,9 +35,14 @@ class GameBoard {
 public:
 	GameBoard();
 
-	//For debugging purposes
-	Bitboard genBitBoard() const;
-
 	Bitboard getColorBoard(Color color) const;
-	Bitboard getWholeBoard() const { return genBitBoard(); };
+	Bitboard getWholeBoard() const { return black.teamBitBoard | white.teamBitBoard; }
+
+	
+	Bitboard genBitBoard() const;
+	Piece const& getPiece(Pos pos) const { return *(board.at(pos.column).at(pos.row)); }
+	bool squareOccupied(Pos pos) const { return board.at(pos.column).at(pos.row) != nullptr; }
+	void movePiece(Pos start, Pos end);
+
+	//operator std::string const();
 };

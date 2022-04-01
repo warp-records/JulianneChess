@@ -59,3 +59,25 @@ GameBoard::Team::Team(Color _color) {
 Bitboard GameBoard::getColorBoard(Color color) const {
 	return color == Color::Black ? black.teamBitBoard : white.teamBitBoard;
 }
+
+//Note: NEEDS to be changed
+void GameBoard::movePiece(Pos start, Pos end) {
+	Piece* piece = board[start.column][start.row];
+
+	//Mark the square from the starting piece pos empty
+	if (piece->color() == Color::Black) {
+		black.teamBitBoard &= ~start.asBitBoard();
+		black.teamBitBoard |= end.asBitBoard();
+
+		white.teamBitBoard &= ~end.asBitBoard();
+	} else {
+		white.teamBitBoard &= ~start.asBitBoard();
+		white.teamBitBoard |= end.asBitBoard();
+
+		black.teamBitBoard &= ~end.asBitBoard();
+	}
+
+
+	board[end.column][end.row] = board[start.column][start.row];
+	board[start.column][start.row] = nullptr;
+}

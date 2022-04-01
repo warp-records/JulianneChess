@@ -9,7 +9,7 @@
 //ok i know its not the best code but like
 //who cares ig youll like figure it out or sum
 //if you wanna read it XD
-PieceMoveData Game::genMoves(Piece const& piece) {
+PieceMoveData Game::genMoves(Piece const& piece) const {
 
 	switch (piece.type) {
 
@@ -246,4 +246,18 @@ PieceMoveData Game::genKingData(Piece const& piece) const  {
 	}
 
 	return data;
+}
+
+
+
+void Game::movePiece(Pos start, Pos end) {
+	if (!(genMoves(gameBoard.getPiece(start)).first & end.asBitBoard())) {
+		throw std::exception();
+	}
+
+	gameBoard.movePiece(start, end);
+}
+
+Bitboard Game::getMovesFromPos(Pos pos) const {
+	return genMoves(gameBoard.getPiece(pos)).first;
 }
