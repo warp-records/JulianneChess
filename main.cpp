@@ -54,11 +54,12 @@ int main() {
 	
 	
 	while (true) {
-		outBitBoard(std::cout, game.getBitBoard());
+		//outBitBoard(std::cout, game.getBitBoard(), false);
+		std::cout << game.gameOutput();
 
 		Pos piecePos;
 
-		std::cout << "Position of piece to move:" << std::endl;
+		std::cout << "\nPosition of piece to move:" << std::endl;
 		std::cin >> piecePos;
 
 

@@ -4,7 +4,7 @@ namespace Pieces {
 	struct Bishop : public Piece {
 		using Piece::Piece;
 
-		PieceType const type = PieceType::Bishop;
+		type = PieceType::Bishop;
 
 		Bitboard getMoveRange() const;
 		operator std::string() const { return "Bishop"; }

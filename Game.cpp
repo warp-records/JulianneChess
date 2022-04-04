@@ -2,6 +2,7 @@
 #include <optional>
 #include <array>
 #include <algorithm>
+#include <sstream>
 #include "Game.hpp"
 #include "Pieces/PieceMoveTables.hpp"
 
@@ -252,7 +253,9 @@ PieceMoveData Game::genKingData(Piece const& piece) const  {
 
 void Game::movePiece(Pos start, Pos end) {
 	if (!(genMoves(gameBoard.getPiece(start)).first & end.asBitBoard())) {
-		throw std::exception();
+		std::cerr << "Error: invalid move" << std::endl;
+		//throw std::exception();
+		return;
 	}
 
 	gameBoard.movePiece(start, end);
@@ -260,4 +263,14 @@ void Game::movePiece(Pos start, Pos end) {
 
 Bitboard Game::getMovesFromPos(Pos pos) const {
 	return genMoves(gameBoard.getPiece(pos)).first;
+}
+
+
+std::string Game::gameOutput() const {
+	std::ostringstream stream;
+
+	stream << "Will Smith vs Chris Rock:\n\n";
+	stream << gameBoard;
+
+	return stream.str();
 }

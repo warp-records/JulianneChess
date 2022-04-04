@@ -1,6 +1,7 @@
 #include "Pieces.hpp"
 #include <vector>
 #include <memory>
+#include <iostream>
 
 #pragma once
 
@@ -26,6 +27,8 @@ class GameBoard {
 		Team(Color _color);
 	};
 
+	/*Need to use brace initialization 
+	to avoid vex parsing error*/
 	Team black { Color::Black };
 	Team white { Color::White };
 
@@ -39,10 +42,11 @@ public:
 	Bitboard getWholeBoard() const { return black.teamBitBoard | white.teamBitBoard; }
 
 	
+	//Revisit this interface laster
 	Bitboard genBitBoard() const;
 	Piece const& getPiece(Pos pos) const { return *(board.at(pos.column).at(pos.row)); }
 	bool squareOccupied(Pos pos) const { return board.at(pos.column).at(pos.row) != nullptr; }
 	void movePiece(Pos start, Pos end);
-
-	//operator std::string const();
 };
+
+std::ostream& operator<<(std::ostream& os, GameBoard const& gameBoard);

@@ -2,6 +2,7 @@
 #include <tuple>
 #include "Pieces/Piece.hpp"
 #include "Gameboard.hpp"
+#include <iostream>
 
 using PieceMoveData = std::pair<Bitboard, 
 	std::array<Pos, 8>>;
@@ -40,4 +41,5 @@ public:
 	Bitboard getBitBoard() const { return gameBoard.getWholeBoard(); }
 	void movePiece(Pos start, Pos end);
 
+	std::string gameOutput() const;
 };

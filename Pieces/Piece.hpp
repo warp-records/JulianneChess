@@ -39,7 +39,7 @@ protected:
 	Pos pos;
 
 public:	
-	PieceType const type = PieceType::PIECE_TYPE_BASE;
+	PieceType type = PieceType::PIECE_TYPE_BASE;
 
 	virtual Bitboard getMoveRange() const = 0;
 	virtual operator std::string() const = 0;

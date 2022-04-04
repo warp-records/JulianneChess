@@ -6,7 +6,7 @@ namespace Pieces {
 
 		bool canCastle = true;
 
-		PieceType const type = PieceType::Knight;
+		type = PieceType::Knight;
 
 		Bitboard getMoveRange() const;
 

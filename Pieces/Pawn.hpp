@@ -5,7 +5,7 @@ namespace Pieces {
 		using Piece::Piece;
 		bool hasMoved = false;
 
-		PieceType const type = PieceType::Pawn;
+		type = PieceType::Pawn;
 
 		Bitboard getMoveRange() const;
 		operator std::string() const { return "Pawn"; }
