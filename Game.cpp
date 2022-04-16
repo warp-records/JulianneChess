@@ -2,6 +2,7 @@
 #include <optional>
 #include <array>
 #include <algorithm>
+#include <sstream>
 #include "Game.hpp"
 #include "Pieces/PieceMoveTables.hpp"
 
@@ -9,9 +10,9 @@
 //ok i know its not the best code but like
 //who cares ig youll like figure it out or sum
 //if you wanna read it XD
-PieceMoveData Game::genMoves(Piece const& piece) {
+PieceMoveData Game::genMoves(Piece const& piece) const {
 
-	switch (piece.type) {
+	switch (piece.getType()) {
 
 		case (PieceType::King) : {
 			return genKingData(piece);
@@ -26,6 +27,9 @@ PieceMoveData Game::genMoves(Piece const& piece) {
 				std::make_pair(genStraightData(piece), genDiagonalData(piece));
 
 
+			//Combine the movespace of both ranges
+			data.first = dataParts.first.first | dataParts.second.first;
+
 			/*Then, copy the attack data from both parts into
 			  the final data*/
 			std::copy(dataParts.first.second.begin(), 
@@ -33,9 +37,6 @@ PieceMoveData Game::genMoves(Piece const& piece) {
 
 			std::copy(dataParts.second.second.begin(), 
 				dataParts.second.second.end(), data.second.begin() + 4);
-
-			//Finally, combine the movespace bitboards of both
-			data.first = dataParts.first.first | dataParts.second.first;
 			break;
 		}
 
@@ -67,7 +68,7 @@ PieceMoveData Game::genMoves(Piece const& piece) {
 
 PieceMoveData Game::genStraightData(Piece const& piece) const {
 
-	//Note: THE ORDER OF THESE MATTERS!
+	//Note: THE ORDER OF THESE MATTERS for the loop to work!
 	std::array<MoveTable const*, 4> constexpr straightRangeTables {{
 		&Pieces::MoveTables::upStraight,
 		&Pieces::MoveTables::downStraight,
@@ -121,7 +122,7 @@ PieceMoveData Game::genDiagonalData(Piece const& piece) const {
 
 	bool spanUp = true;
 
-	for (MoveTable const* table :diagonalRangeTables) {
+	for (MoveTable const* table : diagonalRangeTables) {
 		auto movePartData = genMoveDataPart((*table)[piece.getPos().column][piece.getPos().row], spanUp);
 		//Every other move is span
 		spanUp = !spanUp;
@@ -155,9 +156,9 @@ std::pair<Bitboard, std::optional<Pos>>
 	targetPiece <<= targetBitIdx;
 	//If it's on the board
 	targetPiece &= gameBoard.getWholeBoard();
-
+	
 	if (!targetPiece)
-		std::make_pair(rangePart, std::nullopt);
+		return std::make_pair(rangePart, std::nullopt);
 
 
 	Bitboard rangePartIdx = spansUp ? 
@@ -186,7 +187,7 @@ std::pair<Bitboard, std::optional<Pos>>
 
 
 PieceMoveData Game::genKnightData(Piece const& piece) const {
-	if (piece.type != PieceType::Knight)
+	if (piece.getType() != PieceType::Knight)
 		throw std::exception();
 	
 	PieceMoveData data;
@@ -204,27 +205,26 @@ PieceMoveData Game::genKnightData(Piece const& piece) const {
 }
 
 PieceMoveData Game::genPawnData(Piece const& piece) const {
-	if (piece.type != PieceType::Pawn)
+	if (piece.getType() != PieceType::Pawn)
 		throw std::exception();
 
 	PieceMoveData data;
-	Bitboard moveRange = 0x00;
 
 
 	if (!(piece.getBBoard() << 8 & gameBoard.getWholeBoard()))
-		moveRange |= piece.getBBoard() << 8;
+		data.first |= piece.getBBoard() << 8;
 
 	if (piece.getBBoard() << 7 & gameBoard.getColorBoard(!piece.color()) &&
 		piece.getPos().column < 7) {
 
-		moveRange |= piece.getBBoard() << 7;
+		data.first |= piece.getBBoard() << 7;
 		data.second[0] = { piece.getPos().column + 1, piece.getPos().row + 1  };
 	}
 
 	if (piece.getBBoard() << 9 & gameBoard.getColorBoard(!piece.color()) &&
 			piece.getPos().column > 0) {
 
-		moveRange |= piece.getBBoard() << 7;
+		data.first |= piece.getBBoard() << 7;
 		data.second[1] = { piece.getPos().column + 1, piece.getPos().row + 1  };
 	}
 
@@ -232,7 +232,7 @@ PieceMoveData Game::genPawnData(Piece const& piece) const {
 }
 
 PieceMoveData Game::genKingData(Piece const& piece) const  {
-	if (piece.type != PieceType::King)
+	if (piece.getType() != PieceType::King)
 		throw std::exception();
 	
 	PieceMoveData data;
@@ -246,4 +246,31 @@ PieceMoveData Game::genKingData(Piece const& piece) const  {
 	}
 
 	return data;
+}
+
+
+
+void Game::movePiece(Pos start, Pos end) {
+
+	if (!(genMoves(gameBoard.getPiece(start)).first & end.asBitBoard())) {
+		std::cerr << "Error: invalid move" << std::endl;
+		//throw std::exception();
+		return;
+	}
+
+	gameBoard.movePiece(start, end);
+}
+
+Bitboard Game::getMovesFromPos(Pos pos) const {
+	return genMoves(gameBoard.getPiece(pos)).first;
+}
+
+
+std::string Game::gameOutput() const {
+	std::ostringstream stream;
+
+	stream << "Will Smith vs Chris Rock:\n\n";
+	stream << gameBoard;
+
+	return stream.str();
 }

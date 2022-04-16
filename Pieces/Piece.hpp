@@ -25,7 +25,14 @@ struct Pos {
 		str += '0' + column;
 
 		return str;
-	} 
+	}
+
+	Bitboard asBitBoard() const {
+		Bitboard bb = 0b1;
+		bb <<= (row*8 + 7 - column); 
+
+		return bb;
+	}
 };
 
 /*This really should be inside the Pieces namespace,
@@ -37,15 +44,16 @@ protected:
 	Pos pos;
 
 public:	
-	PieceType const type = PieceType::PIECE_TYPE_BASE;
+	virtual PieceType getType() const = 0;
 
 	virtual Bitboard getMoveRange() const = 0;
 	virtual operator std::string() const = 0;
 
 	Pos getPos() const { return pos; }
+	void setPos(Pos _pos) { pos = _pos; }
 
 	Bitboard getBBoard() const {
-		return 1 << (pos.row*8 + 7 - pos.column);
+		pos.asBitBoard();
 	}
 
 	Color color() const { return _color; }

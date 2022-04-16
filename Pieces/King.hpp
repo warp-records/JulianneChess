@@ -6,8 +6,7 @@ namespace Pieces {
 		
 		bool canCastle = true;
 
-		PieceType const type = PieceType::King;
-
+		PieceType getType() const { return PieceType::King; }
 		
 		Bitboard getMoveRange() const;
 		operator std::string() const { return "King"; }

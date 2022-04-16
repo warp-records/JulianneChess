@@ -8,7 +8,7 @@ namespace Pieces {
 		moved and / or castled*/
 		bool canCastle = true;
 
-		PieceType const type = PieceType::Rook;
+		PieceType getType() const { return PieceType::Rook; }
 
 		//Bitboard genCastle();
 		Bitboard getMoveRange() const;
