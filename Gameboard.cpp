@@ -128,7 +128,7 @@ std::ostream& operator<<(std::ostream& os, GameBoard const& gameBoard) {
 	};
 
 	for (int row = 7; row >= 0; row--) {
-		os << char ('A' + row) << "    ";
+		os << std::to_string(col + 1) << "    ";
 
 		for (int col = 0; col <= 7; col++) {
 			char symbol;
@@ -152,7 +152,7 @@ std::ostream& operator<<(std::ostream& os, GameBoard const& gameBoard) {
 	os << "\n     ";
 
 	for (int col = 0; col <= 7; col++)
-		os << std::to_string(col + 1) << ' ';
+		os << char ('A' + row) << ' ';
 
 	os << '\n';
 
