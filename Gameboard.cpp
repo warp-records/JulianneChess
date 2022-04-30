@@ -72,7 +72,7 @@ void GameBoard::movePiece(Pos start, Pos end) {
 	piece->setPos(end);
 
 	//Mark the square from the starting piece pos empty
-	if (piece->color() == Color::Black) {
+	if (piece->getColor() == Color::Black) {
 		black.teamBitBoard &= ~start.asBitBoard();
 		black.teamBitBoard |= end.asBitBoard();
 
@@ -137,7 +137,7 @@ std::ostream& operator<<(std::ostream& os, GameBoard const& gameBoard) {
 				Piece const* piece = &gameBoard.getPiece({col, row});
 				symbol = pieceSymbolMap[piece->getType()];
 
-				if (piece->color() == Color::White) 
+				if (piece->getColor() == Color::White) 
 					symbol = std::toupper(symbol);
 			} else {
 				symbol = '0';

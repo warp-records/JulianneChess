@@ -10,148 +10,102 @@
 //ok i know its not the best code but like
 //who cares ig youll like figure it out or sum
 //if you wanna read it XD
-PieceMoveData Game::genMoves(Piece const& piece) const {
+Bitboard Game::genMoves(Piece const& piece) const {
+	Bitboard moveSpace = 0x00;
 
 	switch (piece.getType()) {
 
 		case (PieceType::King) : {
-			return genKingData(piece);
+			moveSpace = genKingMoves(piece);
 			break;
 		}
 
 		case (PieceType::Queen) : {
-			PieceMoveData data;
-
-			//Generate move data for both straight and diagonal moves
-			std::pair<PieceMoveData, PieceMoveData> dataParts =
-				std::make_pair(genStraightData(piece), genDiagonalData(piece));
-
-
-			//Combine the movespace of both ranges
-			data.first = dataParts.first.first | dataParts.second.first;
-
-			/*Then, copy the attack data from both parts into
-			  the final data*/
-			std::copy(dataParts.first.second.begin(), 
-				dataParts.first.second.end(), data.second.begin());
-
-			std::copy(dataParts.second.second.begin(), 
-				dataParts.second.second.end(), data.second.begin() + 4);
+			moveSpace = genStraightMoves(piece) | genDiagonalMoves(piece);
 			break;
 		}
 
 		case (PieceType::Rook) : {
-			return genStraightData(piece);
+			moveSpace = genStraightMoves(piece);
 			break;
 		}
 
 		case (PieceType::Bishop) : {
-			return genDiagonalData(piece);
+			moveSpace = genDiagonalMoves(piece);
 			break;
 		}
 
 		case (PieceType::Knight) : {
-			return genKnightData(piece);
+			moveSpace = genKnightMoves(piece);
 			break;
 		}
 
 		case (PieceType::Pawn) : {
-			return genPawnData(piece);
+			moveSpace = genPawnMoves(piece);
 			break;
 		}
 	}
+
+	moveSpace &= ~gameBoard.getColorBoard(piece.getColor());
+
+	return moveSpace;
 }
 
 
 
 
 
-PieceMoveData Game::genStraightData(Piece const& piece) const {
+Bitboard Game::genStraightMoves(Piece const& piece) const {
+	Bitboard moveSpace = 0x00;
 
-	//Note: THE ORDER OF THESE MATTERS for the loop to work!
-	std::array<MoveTable const*, 4> constexpr straightRangeTables {{
-		&Pieces::MoveTables::upStraight,
-		&Pieces::MoveTables::downStraight,
-		&Pieces::MoveTables::rightStraight,
-		&Pieces::MoveTables::leftStraight
-	}};
+	moveSpace |= genMoveSpacePart(Pieces::MoveTables::upStraight
+		[piece.getPos().column][piece.getPos().row], true);
 
-	//Change later
-	Bitboard moveRange = 0x00;
-	
-	uint8_t numAttacks = 0;
+	moveSpace |= genMoveSpacePart(Pieces::MoveTables::downStraight
+		[piece.getPos().column][piece.getPos().row], false);
 
-	std::array<Pos, 8> attacks {{ POS_NONE, POS_NONE, POS_NONE, POS_NONE,
-						POS_NONE, POS_NONE, POS_NONE, POS_NONE }};
+	moveSpace |= genMoveSpacePart(Pieces::MoveTables::leftStraight
+		[piece.getPos().column][piece.getPos().row], true);
 
-	//Consider creating unpackMoveData() function
-	bool spanUp = true;
-	for (MoveTable const* table : straightRangeTables) {
-		/*std::pair which contains:
-		  Bitboard of valid moves
-		  optional intersected piece pos*/
-		auto movePartData = genMoveDataPart((*table)[piece.getPos().column][piece.getPos().row], spanUp);
-		//Every other move is span
-		spanUp = !spanUp;
+	moveSpace |= genMoveSpacePart(Pieces::MoveTables::rightStraight
+		[piece.getPos().column][piece.getPos().row], false);	
 
-		moveRange |= movePartData.first;
-
-		if (movePartData.second) {
-			attacks[numAttacks] = movePartData.second.value();
-			numAttacks++;
-		}
-	}
-
-	return std::make_pair(moveRange, attacks);
+	return moveSpace;
 }
 
-PieceMoveData Game::genDiagonalData(Piece const& piece) const {
-	std::array<MoveTable const*, 4> constexpr diagonalRangeTables {{
-		&Pieces::MoveTables::upRight,
-		&Pieces::MoveTables::downRight,
-		&Pieces::MoveTables::upLeft,
-		&Pieces::MoveTables::downLeft
-	}};
+Bitboard Game::genDiagonalMoves(Piece const& piece) const {
+	Bitboard moveSpace = 0x00;
 
-	Bitboard moveRange = 0x00;
-	
-	uint8_t numAttacks = 0;
+	moveSpace |= genMoveSpacePart(Pieces::MoveTables::upRight
+		[piece.getPos().column][piece.getPos().row], true);
 
-	std::array<Pos, 8> attacks {{ POS_NONE, POS_NONE, POS_NONE, POS_NONE,
-						POS_NONE, POS_NONE, POS_NONE, POS_NONE }};
+	moveSpace |= genMoveSpacePart(Pieces::MoveTables::upLeft
+		[piece.getPos().column][piece.getPos().row], true);
 
-	bool spanUp = true;
+	moveSpace |= genMoveSpacePart(Pieces::MoveTables::downRight
+		[piece.getPos().column][piece.getPos().row], false);
 
-	for (MoveTable const* table : diagonalRangeTables) {
-		auto movePartData = genMoveDataPart((*table)[piece.getPos().column][piece.getPos().row], spanUp);
-		//Every other move is span
-		spanUp = !spanUp;
+	moveSpace |= genMoveSpacePart(Pieces::MoveTables::downLeft
+		[piece.getPos().column][piece.getPos().row], false);	
 
-		moveRange |= movePartData.first;
-
-		if (movePartData.second) {
-			attacks[numAttacks] = movePartData.second.value();
-			numAttacks++;
-		}
-	}
-
-	return std::make_pair(moveRange, attacks);
+	return moveSpace;
 }
 
-//<Bitboard move, (optional) attack position>
 /*Wether to use MSB or use LSB for finding
 the nearest intersected piece*/
-std::pair<Bitboard, std::optional<Pos>> 
-	Game::genMoveDataPart(Bitboard rangePart, bool spansUp) const {
+Bitboard Game::genMoveSpacePart(Bitboard rangePart, bool spansUp) const {
 
 	Bitboard intersect = rangePart & gameBoard.getWholeBoard();
+
+	if (!intersect)
+		return rangePart;
 
 	/*Select the closest piece to the piece
 	we are generating move data for...*/
 	uint8_t targetBitIdx = spansUp ? 
 			std::countr_zero(intersect) :
 			63 - std::countl_zero(intersect);
-
+	
 	Bitboard targetPiece = 0b01;
 	targetPiece <<= targetBitIdx;
 
@@ -162,91 +116,81 @@ std::pair<Bitboard, std::optional<Pos>>
 
 	Bitboard clipMask = rangePart;
 
+	//Make branchless later
 	if (spansUp) {
 		clipMask <<= targetBitIdx - rangePartIdx;
 	} else {
 		clipMask >>= rangePartIdx - targetBitIdx;
 	}
 
-	rangePart &= ~clipMask;
+	/*
+	Bitboard tailClipMask = 0b1;
 
-	//x >> 3 divides x by 8 and discards remainder
-	return std::make_pair(
-				rangePart,
-				std::make_optional<Pos>(Pos {targetBitIdx % 8, targetBitIdx >> 3})
-			);
+	tailClipMask <<= spansUp ? 
+			std::countr_zero(intersect) :
+			63 - std::countl_zero(intersect);
+	*/
+
+	//Preserve the target piece bit
+	Bitboard moveSpacePart = rangePart & ~clipMask /*& ~tailClipMask*/ | targetPiece;
+
+	return moveSpacePart;
 }
 
 
+Bitboard Game::genPawnMoves(Piece const& piece) const {
+	Bitboard moveSpace = 0x00;
 
+	bool movesUp = piece.getColor() == Color::White;
 
-PieceMoveData Game::genKnightData(Piece const& piece) const {
-	if (piece.getType() != PieceType::Knight)
-		throw std::exception();
-	
-	PieceMoveData data;
-	Bitboard moveRange;
+	Bitboard moveTile = movesUp ? 
+		piece.getBBoard() << 8 : piece.getBBoard() >> 8;
 
-	data.first = piece.getMoveRange() ^ gameBoard.getColorBoard(piece.color());
-	Bitboard enemyIntersect = piece.getMoveRange() & gameBoard.getColorBoard(!piece.color());
-
-	for (int i = 0; enemyIntersect != 0x00 && i < 8; i++) {
-		data.second[i] = { std::countr_zero(enemyIntersect) % 8, 
-							std::countr_zero(enemyIntersect) >> 8 };
+	if ((movesUp && piece.getPos().row == 7) 
+		|| (!movesUp && piece.getPos().row == 0)) {
+		break;
 	}
 
-	return data;
+	if (!(moveTile & gameBoard.getWholeBoard())) {
+		moveSpace |= moveTile;
+	}
+
+
+	moveTile = movesUp ? 
+		piece.getBBoard() << 7 : piece.getBBoard() >> 7;
+
+	if (moveTile & gameBoard.getColorBoard(!piece.getColor()) 
+		&& !(movesUp && piece.getPos().column == 0)) {
+		moveSpace |= moveTile;
+	}
+
+
+	moveTile = movesUp ? 
+		piece.getBBoard() << 9 : piece.getBBoard() >> 9;
+
+	if (moveTile & gameBoard.getColorBoard(!piece.getColor()) 
+		&& !(!movesUp && piece.getPos().column == 7)) {
+		moveSpace |= moveTile;
+	}
+
+
+	return moveSpace;
 }
 
-PieceMoveData Game::genPawnData(Piece const& piece) const {
-	if (piece.getType() != PieceType::Pawn)
-		throw std::exception();
-
-	PieceMoveData data;
-
-
-	if (!(piece.getBBoard() << 8 & gameBoard.getWholeBoard()))
-		data.first |= piece.getBBoard() << 8;
-
-	if (piece.getBBoard() << 7 & gameBoard.getColorBoard(!piece.color()) &&
-		piece.getPos().column < 7) {
-
-		data.first |= piece.getBBoard() << 7;
-		data.second[0] = { piece.getPos().column + 1, piece.getPos().row + 1  };
-	}
-
-	if (piece.getBBoard() << 9 & gameBoard.getColorBoard(!piece.color()) &&
-			piece.getPos().column > 0) {
-
-		data.first |= piece.getBBoard() << 7;
-		data.second[1] = { piece.getPos().column + 1, piece.getPos().row + 1  };
-	}
-
-	return data;
+//Shoud I ditch these?!?
+Bitboard Game::genKnightMoves(Piece const& piece) const {
+	return piece.getMoveRange();
 }
 
-PieceMoveData Game::genKingData(Piece const& piece) const  {
-	if (piece.getType() != PieceType::King)
-		throw std::exception();
-	
-	PieceMoveData data;
-
-	data.first = piece.getMoveRange() & ~gameBoard.getColorBoard(piece.color());
-	Bitboard enemyIntersect = piece.getMoveRange() & gameBoard.getColorBoard(!piece.color());
-
-	for (int i = 0; enemyIntersect != 0x00 && i < 8; i++) {
-		data.second[i] = { std::countr_zero(enemyIntersect) % 8, 
-							std::countr_zero(enemyIntersect) >> 8 };
-	}
-
-	return data;
+Bitboard Game::genKingMoves(Piece const& piece) const  {
+	return piece.getMoveRange();
 }
 
 
 
 void Game::movePiece(Pos start, Pos end) {
 
-	if (!(genMoves(gameBoard.getPiece(start)).first & end.asBitBoard())) {
+	if (!(genMoves(gameBoard.getPiece(start)) & end.asBitBoard())) {
 		std::cerr << "Error: invalid move" << std::endl;
 		//throw std::exception();
 		return;
@@ -256,7 +200,7 @@ void Game::movePiece(Pos start, Pos end) {
 }
 
 Bitboard Game::getMovesFromPos(Pos pos) const {
-	return genMoves(gameBoard.getPiece(pos)).first;
+	return genMoves(gameBoard.getPiece(pos));
 }
 
 

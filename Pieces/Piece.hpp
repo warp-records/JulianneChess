@@ -39,7 +39,7 @@ struct Pos {
 but adding it would screw with a lot of code*/
 class Piece {
 protected:
-	Color _color;
+	Color color;
 
 	Pos pos;
 
@@ -56,8 +56,8 @@ public:
 		pos.asBitBoard();
 	}
 
-	Color color() const { return _color; }
+	Color getColor() const { return color; }
 
-	Piece(Color _arg_color, Pos _pos) : 
-	_color{_arg_color}, pos{_pos} {}; 
+	Piece(Color _color, Pos _pos) : 
+		color{_color}, pos{_pos} {}; 
 };
