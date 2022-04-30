@@ -144,26 +144,20 @@ the nearest intersected piece*/
 std::pair<Bitboard, std::optional<Pos>> 
 	Game::genMoveDataPart(Bitboard rangePart, bool spansUp) const {
 
-		/*Select the closest piece to the piece
-	we are generating move data for...*/
-	uint8_t targetBitIdx = spansUp ? 
-			63 - std::countl_zero(rangePart) : std::countr_zero(rangePart);
+	Bitboard intersect = rangePart & gameBoard.getWholeBoard();
 
-
-	Bitboard targetPiece = 0b01;
 	/*Select the closest piece to the piece
 	we are generating move data for...*/
-	targetPiece <<= targetBitIdx;
-	//If it's on the board
-	targetPiece &= gameBoard.getWholeBoard();
-	
-	if (!targetPiece)
-		return std::make_pair(rangePart, std::nullopt);
+	uint8_t targetBitIdx = spansUp ? 
+			std::countr_zero(intersect) :
+			63 - std::countl_zero(intersect);
 
+	Bitboard targetPiece = 0b01;
+	targetPiece <<= targetBitIdx;
 
 	Bitboard rangePartIdx = spansUp ? 
-			63 - std::countl_zero(rangePart) 
-				: std::countr_zero(rangePart);
+			std::countr_zero(rangePart) :
+			63 - std::countl_zero(rangePart);
 
 
 	Bitboard clipMask = rangePart;
