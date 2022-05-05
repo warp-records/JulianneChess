@@ -146,21 +146,16 @@ Bitboard Game::genPawnMoves(Piece const& piece) const {
 	Bitboard moveTile = movesUp ? 
 		piece.getBBoard() << 8 : piece.getBBoard() >> 8;
 
-	if ((movesUp && piece.getPos().row == 7) 
-		|| (!movesUp && piece.getPos().row == 0)) {
-		break;
-	}
-
-	if (!(moveTile & gameBoard.getWholeBoard())) {
+	/*No need to check if the pawn is at the end of the board,
+	since it will always be promoted to a different piece*/
+	if (!(moveTile & gameBoard.getWholeBoard()))nne
 		moveSpace |= moveTile;
-	}
 
 
 	moveTile = movesUp ? 
 		piece.getBBoard() << 7 : piece.getBBoard() >> 7;
 
-	if (moveTile & gameBoard.getColorBoard(!piece.getColor()) 
-		&& !(movesUp && piece.getPos().column == 0)) {
+	if (moveTile & gameBoard.getColorBoard(!piece.getColor())) {
 		moveSpace |= moveTile;
 	}
 
@@ -168,8 +163,7 @@ Bitboard Game::genPawnMoves(Piece const& piece) const {
 	moveTile = movesUp ? 
 		piece.getBBoard() << 9 : piece.getBBoard() >> 9;
 
-	if (moveTile & gameBoard.getColorBoard(!piece.getColor()) 
-		&& !(!movesUp && piece.getPos().column == 7)) {
+	if (moveTile & gameBoard.getColorBoard(!piece.getColor())) {
 		moveSpace |= moveTile;
 	}
 
