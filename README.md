@@ -6,4 +6,4 @@ As of the time of writing this, I'm in the middle of writing an emulator, and I'
 ## TODO:
 https://trello.com/b/6HhXs3nH/julianne-chess
 
-![Horsie](Assets/knight_2_head)
+![Horsie](Assets/knight_2_head.png)
