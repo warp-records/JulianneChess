@@ -14,8 +14,6 @@ GameBoard::GameBoard() {
 
 	for (auto const& piece : white.pieceList)
 		board[piece->getPos().column][piece->getPos().row] = piece.get();
-
-	board[0][2] = 0x00;
 }
 
 
