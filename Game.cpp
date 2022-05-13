@@ -148,7 +148,7 @@ Bitboard Game::genPawnMoves(Piece const& piece) const {
 
 	if ((movesUp && piece.getPos().row == 7) 
 		|| (!movesUp && piece.getPos().row == 0)) {
-		break;
+		return 0x00;
 	}
 
 	if (!(moveTile & gameBoard.getWholeBoard())) {
