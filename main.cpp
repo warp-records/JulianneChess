@@ -51,7 +51,16 @@ int main() {
 	"[_______]\n" << std::endl;
 
 	Game game;
-	
+	/*
+	00000000
+	00000000
+	00000000
+	00000000
+	00000000
+	00000000
+	00000000
+	0 1 1 1 0 1 1 0
+	*/
 	
 	while (true) {
 		//outBitBoard(std::cout, game.getBitBoard(), false);

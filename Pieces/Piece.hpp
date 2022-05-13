@@ -43,6 +43,8 @@ protected:
 
 	Pos pos;
 
+	bool _hasMoved = false;
+
 public:	
 	virtual PieceType getType() const = 0;
 
@@ -57,6 +59,9 @@ public:
 	}
 
 	Color getColor() const { return color; }
+
+	bool hasMoved() const { return _hasMoved; }
+	void setMoved() { _hasMoved = true; }
 
 	Piece(Color _color, Pos _pos) : 
 		color{_color}, pos{_pos} {}; 
