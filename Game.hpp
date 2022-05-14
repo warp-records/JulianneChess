@@ -22,6 +22,8 @@ class Game {
 	Bitboard genPawnMoves(Piece const& piece) const;
 	Bitboard genKingMoves(Piece const& piece) const;
 
+	//Generates **KING'S** castle moves
+	Bitboard genCastleMoves(Color color) const;
 
 	/*Generate movespace a move part range, and wether 
 	it points upwards or downwards*/
