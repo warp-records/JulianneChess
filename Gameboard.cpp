@@ -132,8 +132,8 @@ std::ostream& operator<<(std::ostream& os, GameBoard const& gameBoard) {
 		for (int col = 0; col <= 7; col++) {
 			char symbol;
 
-			if (gameBoard.squareOccupied({col, row})) {
-				Piece const* piece = &gameBoard.getPiece({col, row});
+			if (gameBoard.squareOccupied({(uint8_t) col, (uint8_t) row})) {
+				Piece const* piece = &gameBoard.getPiece({(uint8_t) col, (uint8_t) row});
 				symbol = pieceSymbolMap[piece->getType()];
 
 				if (piece->getColor() == Color::White) 
