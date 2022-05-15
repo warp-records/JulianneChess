@@ -27,7 +27,6 @@ Bitboard Game::genMoves(Piece const& piece) const {
 
 		case (PieceType::Rook) : {
 			moveSpace = genStraightMoves(piece);
-			moveSpace |= genCastleMoves(piece.getColor());
 
 			break;
 		}
@@ -145,12 +144,23 @@ Bitboard Game::genPawnMoves(Piece const& piece) const {
 
 	bool movesUp = piece.getColor() == Color::White;
 
-	Bitboard moveTile = movesUp ? 
-		piece.getBBoard() << 8 : piece.getBBoard() >> 8;
 
 	/*No need to check if the pawn is at the end of the board,
 	since it will always be promoted to a different piece*/
+
+	Bitboard moveTile;
+
+	moveTile = movesUp ? 
+		piece.getBBoard() << 8 : piece.getBBoard() >> 8;
+
 	if (!(moveTile & gameBoard.getWholeBoard()))
+		moveSpace |= moveTile;
+
+
+	moveTile = movesUp ? 
+		piece.getBBoard() << 16 : piece.getBBoard() >> 16;
+
+	if (!piece.hasMoved() && !(moveTile & gameBoard.getWholeBoard()))
 		moveSpace |= moveTile;
 
 
@@ -179,7 +189,7 @@ Bitboard Game::genKnightMoves(Piece const& piece) const {
 }
 
 Bitboard Game::genKingMoves(Piece const& piece) const  {
-	return piece.getMoveRange() | genCastleMoves(piece.getColor());
+	return piece.getMoveRange() | genCastleMoves(piece);
 }
 
 
@@ -195,17 +205,17 @@ void Game::movePiece(Pos start, Pos end) {
 }
 
 //Note: this is ONLY FOR USE BY THE KING
-Bitboard Game::genCastleMoves(Color color) const {
+Bitboard Game::genCastleMoves(Piece const& piece) const {
 	Bitboard castleMask = 0x00;
 
-	uint8_t const row = color == Color::Black ? 7 : 0;
+	uint8_t const row = piece.getColor() == Color::Black ? 7 : 0;
 
 	//Mask of space between the king and the rooks
-	Bitboard const lSpaceMask = 0x70 << row * 8;
-	Bitboard const rSpaceMask = 0x06 << row * 8;
+	Bitboard const lSpaceMask = (uint64_t) 0x70 << row * 8;
+	Bitboard const rSpaceMask = (uint64_t) 0x06 << row * 8;
 
-	Bitboard const lCastleMask = 0x20 << row * 8;
-	Bitboard const rCastleMask = 0x02 << row * 8;
+	Bitboard const lCastleMask = (uint64_t) 0x20 << row * 8;
+	Bitboard const rCastleMask = (uint64_t) 0x02 << row * 8;
 
 	auto checkConds = [&](Piece const* piece, PieceType type, Bitboard mask = 0x00) -> bool {
 		return piece && piece->getType() == type && 

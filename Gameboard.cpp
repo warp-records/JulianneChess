@@ -68,6 +68,7 @@ void GameBoard::movePiece(Pos start, Pos end) {
 	Piece* piece = board[start.column][start.row];
 
 	piece->setPos(end);
+	piece->setMoved();
 
 	//Mark the square from the starting piece pos empty
 	if (piece->getColor() == Color::Black) {
