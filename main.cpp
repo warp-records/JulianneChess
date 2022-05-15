@@ -4,7 +4,7 @@
 #include "Pieces.hpp"
 #include "Game.hpp"
 
-#define VERSION "0.3.0"
+#define VERSION "0.3.1"
 
 //Some reason this doesn't link when placed in Piece.hpp or Piece.cpp
 std::ostream& operator<<(std::ostream& os, Pos pos) {
@@ -51,7 +51,16 @@ int main() {
 	"[_______]\n" << std::endl;
 
 	Game game;
-	
+	/*
+	00000000
+	00000000
+	00000000
+	00000000
+	00000000
+	00000000
+	00000000
+	0 1 1 1 0 1 1 0
+	*/
 	
 	while (true) {
 		//outBitBoard(std::cout, game.getBitBoard(), false);

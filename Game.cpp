@@ -27,6 +27,7 @@ Bitboard Game::genMoves(Piece const& piece) const {
 
 		case (PieceType::Rook) : {
 			moveSpace = genStraightMoves(piece);
+
 			break;
 		}
 
@@ -143,24 +144,30 @@ Bitboard Game::genPawnMoves(Piece const& piece) const {
 
 	bool movesUp = piece.getColor() == Color::White;
 
-	Bitboard moveTile = movesUp ? 
+
+	/*No need to check if the pawn is at the end of the board,
+	since it will always be promoted to a different piece*/
+
+	Bitboard moveTile;
+
+	moveTile = movesUp ? 
 		piece.getBBoard() << 8 : piece.getBBoard() >> 8;
 
-	if ((movesUp && piece.getPos().row == 7) 
-		|| (!movesUp && piece.getPos().row == 0)) {
-		return 0x00;
-	}
-
-	if (!(moveTile & gameBoard.getWholeBoard())) {
+	if (!(moveTile & gameBoard.getWholeBoard()))
 		moveSpace |= moveTile;
-	}
+
+
+	moveTile = movesUp ? 
+		piece.getBBoard() << 16 : piece.getBBoard() >> 16;
+
+	if (!piece.hasMoved() && !(moveTile & gameBoard.getWholeBoard()))
+		moveSpace |= moveTile;
 
 
 	moveTile = movesUp ? 
 		piece.getBBoard() << 7 : piece.getBBoard() >> 7;
 
-	if (moveTile & gameBoard.getColorBoard(!piece.getColor()) 
-		&& !(movesUp && piece.getPos().column == 0)) {
+	if (moveTile & gameBoard.getColorBoard(!piece.getColor())) {
 		moveSpace |= moveTile;
 	}
 
@@ -168,8 +175,7 @@ Bitboard Game::genPawnMoves(Piece const& piece) const {
 	moveTile = movesUp ? 
 		piece.getBBoard() << 9 : piece.getBBoard() >> 9;
 
-	if (moveTile & gameBoard.getColorBoard(!piece.getColor()) 
-		&& !(!movesUp && piece.getPos().column == 7)) {
+	if (moveTile & gameBoard.getColorBoard(!piece.getColor())) {
 		moveSpace |= moveTile;
 	}
 
@@ -177,15 +183,14 @@ Bitboard Game::genPawnMoves(Piece const& piece) const {
 	return moveSpace;
 }
 
-//Shoud I ditch these?!?
+//Should I ditch these?!?
 Bitboard Game::genKnightMoves(Piece const& piece) const {
 	return piece.getMoveRange();
 }
 
 Bitboard Game::genKingMoves(Piece const& piece) const  {
-	return piece.getMoveRange();
+	return piece.getMoveRange() | genCastleMoves(piece);
 }
-
 
 
 void Game::movePiece(Pos start, Pos end) {
@@ -199,9 +204,56 @@ void Game::movePiece(Pos start, Pos end) {
 	gameBoard.movePiece(start, end);
 }
 
+//Note: this is ONLY FOR USE BY THE KING
+Bitboard Game::genCastleMoves(Piece const& piece) const {
+	Bitboard castleMask = 0x00;
+
+	uint8_t const row = piece.getColor() == Color::Black ? 7 : 0;
+
+	//Mask of space between the king and the rooks
+	Bitboard const lSpaceMask = (uint64_t) 0x70 << row * 8;
+	Bitboard const rSpaceMask = (uint64_t) 0x06 << row * 8;
+
+	Bitboard const lCastleMask = (uint64_t) 0x20 << row * 8;
+	Bitboard const rCastleMask = (uint64_t) 0x02 << row * 8;
+
+	auto checkConds = [&](Piece const* piece, PieceType type, Bitboard mask = 0x00) -> bool {
+		return piece && piece->getType() == type && 
+			!piece->hasMoved() && !(gameBoard.getWholeBoard() & mask);
+	};
+
+	Piece const* king = &gameBoard.getPiece({4, row});
+
+	if (!checkConds(king, PieceType::King))
+		return 0x00;
+
+	std::pair<Piece const*, Piece const*> rooks = std::make_pair(
+			&gameBoard.getPiece({0, row}), 
+			&gameBoard.getPiece({7, row})
+		);
+
+	if (checkConds(rooks.first, PieceType::Rook, lSpaceMask)) {
+		castleMask |= lCastleMask;
+	}
+
+	if (checkConds(rooks.second, PieceType::Rook, rSpaceMask)) {
+		castleMask |= rCastleMask;
+	}
+
+	return castleMask;
+}
+
+
+
 Bitboard Game::getMovesFromPos(Pos pos) const {
 	return genMoves(gameBoard.getPiece(pos));
 }
+
+
+//0111k010
+
+
+
 
 
 std::string Game::gameOutput() const {

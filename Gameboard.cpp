@@ -14,8 +14,6 @@ GameBoard::GameBoard() {
 
 	for (auto const& piece : white.pieceList)
 		board[piece->getPos().column][piece->getPos().row] = piece.get();
-
-	board[0][2] = 0x00;
 }
 
 
@@ -70,6 +68,7 @@ void GameBoard::movePiece(Pos start, Pos end) {
 	Piece* piece = board[start.column][start.row];
 
 	piece->setPos(end);
+	piece->setMoved();
 
 	//Mark the square from the starting piece pos empty
 	if (piece->getColor() == Color::Black) {
@@ -133,8 +132,8 @@ std::ostream& operator<<(std::ostream& os, GameBoard const& gameBoard) {
 		for (int col = 0; col <= 7; col++) {
 			char symbol;
 
-			if (gameBoard.squareOccupied({col, row})) {
-				Piece const* piece = &gameBoard.getPiece({col, row});
+			if (gameBoard.squareOccupied({(uint8_t) col, (uint8_t) row})) {
+				Piece const* piece = &gameBoard.getPiece({(uint8_t) col, (uint8_t) row});
 				symbol = pieceSymbolMap[piece->getType()];
 
 				if (piece->getColor() == Color::White) 

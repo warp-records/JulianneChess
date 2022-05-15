@@ -1,3 +1,4 @@
+
 #include <array>
 #include <tuple>
 #include "Pieces/Piece.hpp"
@@ -21,9 +22,11 @@ class Game {
 	Bitboard genPawnMoves(Piece const& piece) const;
 	Bitboard genKingMoves(Piece const& piece) const;
 
+	//Generates **KING'S** castle moves
+	Bitboard genCastleMoves(Piece const& piece) const;
 
-	/*Generate movespace and attack possibilities given
-	a move part range, and wether it points upwards or downwards*/
+	/*Generate movespace a move part range, and wether 
+	it points upwards or downwards*/
 	Bitboard genMoveSpacePart(Bitboard rangePart, bool spanUp) const;
 
 public:
