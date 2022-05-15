@@ -55,7 +55,7 @@ public:
 	void setPos(Pos _pos) { pos = _pos; }
 
 	Bitboard getBBoard() const {
-		pos.asBitBoard();
+		return pos.asBitBoard();
 	}
 
 	Color getColor() const { return color; }
