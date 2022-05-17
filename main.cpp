@@ -35,7 +35,6 @@ int main() {
 
 		std::cout << "Move piece to:" << std::endl;
 		std::cin >> endPos;
-
 		
 		game.movePiece(piecePos, endPos);
 

@@ -7,7 +7,6 @@
 
 class Game {
 	GameBoard gameBoard;
-
 	
 	Bitboard genMoves(Piece const& piece) const;
 

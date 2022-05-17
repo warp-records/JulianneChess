@@ -79,10 +79,8 @@ Bitboard Game::genDiagonalMoves(Piece const& piece) const {
 
 	moveSpace |= genMoveSpacePart(Pieces::MoveTables::upRight
 		[piece.getPos().column][piece.getPos().row], true);
-
 	moveSpace |= genMoveSpacePart(Pieces::MoveTables::upLeft
 		[piece.getPos().column][piece.getPos().row], true);
-
 	moveSpace |= genMoveSpacePart(Pieces::MoveTables::downRight
 		[piece.getPos().column][piece.getPos().row], false);
 
@@ -250,12 +248,6 @@ Bitboard Game::getMovesFromPos(Pos pos) const {
 }
 
 
-//0111k010
-
-
-
-
-
 std::string Game::gameOutput() const {
 	std::ostringstream stream;
 
@@ -263,4 +255,12 @@ std::string Game::gameOutput() const {
 	stream << gameBoard;
 
 	return stream.str();
+}
+
+void Game::movePiece(Pos start, Pos end) {
+	if (!(genMoves(gameBoard.getPiece(start)).first & end.asBitBoard())) {
+		throw std::exception();
+	}
+
+	gameBoard.movePiece(start, end);
 }
