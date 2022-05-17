@@ -59,11 +59,7 @@ public:
 	void setPos(Pos _pos) { pos = _pos; }
 
 	Bitboard getBBoard() const {
-<<<<<<< HEAD
 		return pos.asBitBoard();
-=======
-		pos.asBitBoard();
->>>>>>> 2a9d80c34db2eacdb8271f0c719e6c72c2352493
 	}
 
 	Color getColor() const { return color; }

@@ -256,11 +256,3 @@ std::string Game::gameOutput() const {
 
 	return stream.str();
 }
-
-void Game::movePiece(Pos start, Pos end) {
-	if (!(genMoves(gameBoard.getPiece(start)).first & end.asBitBoard())) {
-		throw std::exception();
-	}
-
-	gameBoard.movePiece(start, end);
-}

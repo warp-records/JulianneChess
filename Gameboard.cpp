@@ -156,3 +156,4 @@ std::ostream& operator<<(std::ostream& os, GameBoard const& gameBoard) {
 	os << '\n';
 
 	return os;
+}
