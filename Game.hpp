@@ -37,6 +37,7 @@ public:
 	//Debug functions
 	Bitboard getMovesFromPos(Pos pos) const;
 	Bitboard getBitBoard() const { return gameBoard.getWholeBoard(); }
+
 	void movePiece(Pos start, Pos end);
 
 	std::string gameOutput() const;
