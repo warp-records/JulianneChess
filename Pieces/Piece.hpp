@@ -5,10 +5,6 @@
 #pragma once
 
 
-/*Weird huh? It's an experimental code
-design I thought I'd try out, I guess
-*/
-
 enum class PieceType { King, Queen, Rook,
 						Bishop, Knight, Pawn, PIECE_TYPE_BASE };
 enum class Color { Black, White };

@@ -31,9 +31,6 @@ class Game {
 
 public:
 
-	/*Note: this interface should NOT be used as a final
-	interface! You should redesign this - this should be used
-	for debugging movegen ONLY*/
 	//Debug functions
 	Bitboard getMovesFromPos(Pos pos) const;
 	Bitboard getBitBoard() const { return gameBoard.getWholeBoard(); }

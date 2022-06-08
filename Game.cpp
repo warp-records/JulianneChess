@@ -7,9 +7,6 @@
 #include "Pieces/PieceMoveTables.hpp"
 
 
-//ok i know its not the best code but like
-//who cares ig youll like figure it out or sum
-//if you wanna read it XD
 Bitboard Game::genMoves(Piece const& piece) const {
 	Bitboard moveSpace = 0x00;
 
@@ -123,15 +120,7 @@ Bitboard Game::genMoveSpacePart(Bitboard rangePart, bool spansUp) const {
 	} else {
 		clipMask >>= rangePartIdx - targetBitIdx;
 	}
-
-	/*
-	Bitboard tailClipMask = 0b1;
-
-	tailClipMask <<= spansUp ? 
-			std::countr_zero(intersect) :
-			63 - std::countl_zero(intersect);
-	*/
-
+	
 	//Preserve the target piece bit
 	Bitboard moveSpacePart = rangePart & ~clipMask /*& ~tailClipMask*/ | targetPiece;
 

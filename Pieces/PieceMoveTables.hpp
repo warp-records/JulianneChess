@@ -6,7 +6,6 @@
 typedef std::array<std::array<Bitboard, 8>, 8> MoveTable;
 
 //I generated the magics myself... not to brag but I'm a bit of a magician :>
-
 namespace Pieces::MoveTables {
 
 	MoveTable constexpr King {{
