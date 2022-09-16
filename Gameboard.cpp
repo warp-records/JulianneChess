@@ -67,6 +67,17 @@ Bitboard GameBoard::getColorBoard(Color color) const {
 void GameBoard::movePiece(Pos start, Pos end) {
 	Piece* piece = board[start.column][start.row];
 
+	//Handle castle
+	if (piece->getType() == PieceType::King && 
+		std::abs(start.column - end.column) > 1) {
+
+		//Kingside castle if king goes to column 6
+		if (end.column == 6)
+			movePiece({7, start.row}, {5, start.row});
+		else
+			movePiece({0, start.row}, {3, start.row});
+	}
+
 	piece->setPos(end);
 	piece->setMoved();
 

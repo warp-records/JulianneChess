@@ -54,8 +54,6 @@ Bitboard Game::genMoves(Piece const& piece) const {
 
 
 
-
-
 Bitboard Game::genStraightMoves(Piece const& piece) const {
 	Bitboard moveSpace = 0x00;
 

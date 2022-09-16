@@ -50,6 +50,8 @@ public:
 	
 
 	void movePiece(Pos start, Pos end);
+	void castleMove(bool kingSide);
+
 };
 
 std::ostream& operator<<(std::ostream& os, GameBoard const& gameBoard);

@@ -29,7 +29,7 @@ struct Pos {
 
 	Bitboard asBitBoard() const {
 		Bitboard bb = 0b1;
-		bb <<= (row*8 + 7 - column); 
+		bb <<= (row*8 + 7 - column);
 
 		return bb;
 	}

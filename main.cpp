@@ -30,7 +30,6 @@ int main() {
 		std::cout << "\nPosition of piece to move:" << std::endl;
 		std::cin >> piecePos;
 
-
 		Pos endPos;
 
 		std::cout << "Move piece to:" << std::endl;
