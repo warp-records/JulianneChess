@@ -10,8 +10,16 @@
 //ok i know its not the best code but like
 //who cares ig youll like figure it out or sum
 //if you wanna read it XD
-Bitboard Game::genMoves(Piece const& piece) const {
+Bitboard Game::genMoves(Piece const& piece) {
 	Bitboard moveSpace = 0x00;
+
+	if (pieceDatCache[&piece].boardIntersect == 
+		piece.getMoveRange() & gameBoard.getWholeBoard()) {
+
+		return pieceDatCache[&piece].moveSpace & 
+			~gameBoard.getColorBoard(piece.getColor());
+	}
+
 
 	switch (piece.getType()) {
 
@@ -27,7 +35,6 @@ Bitboard Game::genMoves(Piece const& piece) const {
 
 		case (PieceType::Rook) : {
 			moveSpace = genStraightMoves(piece);
-
 			break;
 		}
 
@@ -47,10 +54,16 @@ Bitboard Game::genMoves(Piece const& piece) const {
 		}
 	}
 
+	pieceDatCache[&piece].boardIntersect = piece.getMoveRange() & gameBoard.getWholeBoard();
+	pieceDatCache[&piece].moveSpace = moveSpace;
+
 	moveSpace &= ~gameBoard.getColorBoard(piece.getColor());
 
 	return moveSpace;
 }
+
+//-------------------------
+
 
 
 
@@ -241,7 +254,7 @@ Bitboard Game::genCastleMoves(Piece const& piece) const {
 
 
 
-Bitboard Game::getMovesFromPos(Pos pos) const {
+Bitboard Game::getMovesFromPos(Pos pos) {
 	return genMoves(gameBoard.getPiece(pos));
 }
 
@@ -253,4 +266,16 @@ std::string Game::gameOutput() const {
 	stream << gameBoard;
 
 	return stream.str();
+}
+
+
+Game::Game() {
+	for (uint8_t col = 0; col < 8; col++) {
+		for (uint8_t row = 0; row < 8; row++) {
+
+			if (gameBoard.squareOccupied({col, row})) {
+				pieceDatCache.insert({&gameBoard.getPiece({col, row}), {0, 0}});
+			}
+		}
+	}
 }

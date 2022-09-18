@@ -6,9 +6,19 @@
 #include <iostream>
 
 class Game {
+
 	GameBoard gameBoard;
+
+	struct Cache {
+		Bitboard boardIntersect;
+		Bitboard moveSpace;
+	};
 	
-	Bitboard genMoves(Piece const& piece) const;
+	//Cache each piece's move space, along with a list of it's
+	//board intersections to check if it's old moves are still valid
+	std::unordered_map<const Piece*, Cache> pieceDatCache;
+	
+	Bitboard genMoves(Piece const& piece);
 
 	//Generate movespace and attack possibilities pair
 
@@ -34,10 +44,12 @@ public:
 	interface! You should redesign this - this should be used
 	for debugging movegen ONLY*/
 	//Debug functions
-	Bitboard getMovesFromPos(Pos pos) const;
+	Bitboard getMovesFromPos(Pos pos);
 	Bitboard getBitBoard() const { return gameBoard.getWholeBoard(); }
 
 	void movePiece(Pos start, Pos end);
 
 	std::string gameOutput() const;
+
+	Game();
 };

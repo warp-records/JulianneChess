@@ -11,7 +11,6 @@ GameBoard::GameBoard() {
 
 	for (auto const& piece : black.pieceList)
 		board[piece->getPos().column][piece->getPos().row] = piece.get();
-
 	for (auto const& piece : white.pieceList)
 		board[piece->getPos().column][piece->getPos().row] = piece.get();
 }
@@ -56,7 +55,6 @@ GameBoard::Team::Team(Color _color) {
 	yPos = (color == Color::Black ? 6 : 1);
 	for (uint8_t i = 0; i < 8; i++)
 		pieceList.push_back(PiecePtr(new Pieces::Pawn(color, {i, yPos})));
-
 }
 
 Bitboard GameBoard::getColorBoard(Color color) const {

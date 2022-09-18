@@ -49,6 +49,8 @@ protected:
 
 	bool _hasMoved = false;
 
+	//Cache legal moves
+
 public:	
 	virtual PieceType getType() const = 0;
 

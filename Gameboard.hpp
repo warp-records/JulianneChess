@@ -1,6 +1,7 @@
 #include "Pieces.hpp"
 #include <vector>
 #include <memory>
+#include <unordered_map>
 #include <iostream>
 
 #pragma once
@@ -12,10 +13,6 @@ class GameBoard {
 
 	typedef std::unique_ptr<Piece> PiecePtr;
 
-
-	/*All this will take up a considerable chunk
-	of memory... you may need to move to heap
-	to prevent a stack overflow*/
 	struct Team {
 		Color color;
 		/*Optimize later, after getting a working product.
@@ -34,6 +31,7 @@ class GameBoard {
 
 	//Board size is 64
 	std::array<std::array<Piece*, 8>, 8> board {};
+
 
 public:
 	GameBoard();
