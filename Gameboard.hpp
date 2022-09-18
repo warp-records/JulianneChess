@@ -6,6 +6,8 @@
 
 #pragma once
 
+
+//Consider just making struct
 class GameBoard {
 
 	/*Having trouble using a unique_ptr while

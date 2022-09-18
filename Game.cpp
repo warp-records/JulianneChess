@@ -258,12 +258,47 @@ Bitboard Game::getMovesFromPos(Pos pos) {
 	return genMoves(gameBoard.getPiece(pos));
 }
 
+//NEEDS to be optimized
+bool Game::isCheck_(Color color, Pos kingPos) {	
+	Bitboard threatBB = 0;
+	Bitboard kingBB = kingPos.asBitBoard();
 
-std::string Game::gameOutput() const {
+	for (uint8_t col = 0; col < 8; col++) {
+		for (uint8_t row = 0; row < 8; row++) {
+			if (gameBoard.squareOccupied({col, row})) {
+
+				Piece const& piece = gameBoard.getPiece({col, row});
+
+				if (!kingBB && piece.getType() == PieceType::King && 
+						piece.getColor() == color) { kingBB = piece.getBBoard(); }
+
+				if (piece.getColor() == !color) {
+					threatBB |= piece.getBBoard();
+
+					if (threatBB & kingBB)
+						return true;
+				}
+			}
+		}
+	}
+
+	return false;
+}
+
+
+std::string Game::gameOutput() {
 	std::ostringstream stream;
 
 	stream << "Will Smith vs Chris Rock:\n\n";
 	stream << gameBoard;
+	bool blackCheck = isCheck_(Color::Black);
+	bool whiteCheck = isCheck_(Color::White);
+
+	if (blackCheck)
+		stream << "Black is in check!" << std::endl;
+
+	if (whiteCheck)
+		stream << "White is in check!" << std::endl;
 
 	return stream.str();
 }

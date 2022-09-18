@@ -38,6 +38,9 @@ class Game {
 	it points upwards or downwards*/
 	Bitboard genMoveSpacePart(Bitboard rangePart, bool spanUp) const;
 
+	//Assumes current king position if no position arg is passed
+	bool isCheck_(Color color, Pos kingPos = {255, 255});
+
 public:
 
 	/*Note: this interface should NOT be used as a final
@@ -49,7 +52,9 @@ public:
 
 	void movePiece(Pos start, Pos end);
 
-	std::string gameOutput() const;
+	std::string gameOutput();
+
+	bool isCheck() { return isCheck_(Color::Black) && isCheck_(Color::White); } 
 
 	Game();
 };

@@ -97,32 +97,6 @@ void GameBoard::movePiece(Pos start, Pos end) {
 	board[start.column][start.row] = nullptr;
 }
 
-/*
-std::ostream& operator<<(std::ostream& os, GameBoard const& gameBoard) {
-	std::string buff(64, ' ');
-
-	std::unordered_map<PieceType, char> const pieceSymbolMap {
-		{ PieceType::King, 'k' },
-		{ PieceType::Queen, 'q'},
-		{ PieceType::Rook, 'r' },
-		{ PieceType::Bishop, 'b' },
-		{ PieceType::Knight, 'n' },
-		{ PieceType::Pawn, 'p' }
-	};
-
-	for (auto peice : black.pieceList) {
-		buff[piece->getPos().column + 
-			piece->getPos().row * 8] = pieceSymbolMap[peice->type];
-	}
-
-	for (auto peice : white.pieceList) {
-		buff[piece->getPos().column + 
-			piece->getPos().row * 8] = std::toupper(pieceSymbolMap[peice->type]);
-	}
-
-	return os << buff;
-}*/
-
 bool squareOccupied(Pos pos);
 
 std::ostream& operator<<(std::ostream& os, GameBoard const& gameBoard) {
