@@ -42,7 +42,7 @@ public:
 	Bitboard getWholeBoard() const { return black.teamBitBoard | white.teamBitBoard; }
 
 	
-	//Revisit this interface laster
+	//Revisit this interface later
 	Bitboard genBitBoard() const;
 	Piece const& getPiece(Pos pos) const { return *(board.at(pos.column).at(pos.row)); }
 	bool squareOccupied(Pos pos) const { return board.at(pos.column).at(pos.row) != nullptr; }
