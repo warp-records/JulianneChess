@@ -147,12 +147,15 @@ Bitboard Game::genMoveSpacePart(Bitboard rangePart, bool spansUp) const {
 	return moveSpacePart;
 }
 
-
 Bitboard Game::genPawnMoves(Piece const& piece) const {
 	Bitboard moveSpace = 0x00;
 
-	bool movesUp = piece.getColor() == Color::White;
+	//Prevent pawnms on one end column of the board
+	//from bleeding into the opposite column
+	Bitboard constexpr rightClip = 0xFEFEFEFEFEFEFEFE;
+	Bitboard constexpr leftClip  = 0X7F7F7F7F7F7F7F7F;
 
+	bool movesUp = piece.getColor() == Color::White;
 
 	/*No need to check if the pawn is at the end of the board,
 	since it will always be promoted to a different piece*/
@@ -162,9 +165,7 @@ Bitboard Game::genPawnMoves(Piece const& piece) const {
 	moveTile = movesUp ? 
 		piece.getBBoard() << 8 : piece.getBBoard() >> 8;
 
-	if (!(moveTile & gameBoard.getWholeBoard()))
-		moveSpace |= moveTile;
-
+	moveSpace |= (moveTile & ~gameBoard.getWholeBoard());
 
 	moveTile = movesUp ? 
 		piece.getBBoard() << 16 : piece.getBBoard() >> 16;
@@ -172,24 +173,24 @@ Bitboard Game::genPawnMoves(Piece const& piece) const {
 	if (!piece.hasMoved() && !(moveTile & gameBoard.getWholeBoard()))
 		moveSpace |= moveTile;
 
-
-	moveTile = movesUp ? 
-		piece.getBBoard() << 7 : piece.getBBoard() >> 7;
-
-	if (moveTile & gameBoard.getColorBoard(!piece.getColor())) {
-		moveSpace |= moveTile;
-	}
-
-
-	moveTile = movesUp ? 
-		piece.getBBoard() << 9 : piece.getBBoard() >> 9;
-
-	if (moveTile & gameBoard.getColorBoard(!piece.getColor())) {
-		moveSpace |= moveTile;
-	}
-
+	moveSpace |= genPawnThreat(piece) & gameBoard.getColorBoard(piece.getColor());
 
 	return moveSpace;
+}
+
+Bitboard Game::genPawnThreat(Piece const& piece) const {
+	Bitboard constexpr rightClip = 0xFEFEFEFEFEFEFEFE;
+	Bitboard constexpr leftClip  = 0X7F7F7F7F7F7F7F7F;
+
+	bool movesUp = piece.getColor() == Color::White;
+
+	Bitboard threatBB = movesUp ? 
+		(piece.getBBoard() << 9)&rightClip : (piece.getBBoard() >> 9)&leftClip;
+
+	threatBB |= movesUp ? 
+		piece.getBBoard() << 7 : piece.getBBoard() >> 7;
+
+	return threatBB;
 }
 
 //Should I ditch these?!?
@@ -259,7 +260,7 @@ Bitboard Game::getMovesFromPos(Pos pos) {
 }
 
 //NEEDS to be optimized
-bool Game::isCheck_(Color color, Pos kingPos) {	
+bool Game::isCheck_(Color color, Pos kingPos) {
 	Bitboard threatBB = 0;
 	Bitboard kingBB = kingPos.asBitBoard();
 
@@ -273,7 +274,9 @@ bool Game::isCheck_(Color color, Pos kingPos) {
 						piece.getColor() == color) { kingBB = piece.getBBoard(); }
 
 				if (piece.getColor() == !color) {
-					threatBB |= piece.getBBoard();
+					//Pawns have distinct attack and normal moves
+					threatBB |= piece.getType() != PieceType::Pawn ? 
+						genMoves(piece) : genPawnThreat(piece);
 
 					if (threatBB & kingBB)
 						return true;

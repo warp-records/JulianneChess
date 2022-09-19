@@ -41,6 +41,10 @@ class Game {
 	//Assumes current king position if no position arg is passed
 	bool isCheck_(Color color, Pos kingPos = {255, 255});
 
+	//Exclusively used for check detecting functions...
+	//doesn't behave the same as the rest of the move gen functions
+	Bitboard genPawnThreat(Piece const& piece) const;
+
 public:
 
 	/*Note: this interface should NOT be used as a final
