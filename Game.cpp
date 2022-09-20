@@ -12,14 +12,14 @@
 //if you wanna read it XD
 Bitboard Game::genMoves(Piece const& piece) {
 	Bitboard moveSpace = 0x00;
-
+	
 	if (pieceDatCache[&piece].boardIntersect == 
 		piece.getMoveRange() & gameBoard.getWholeBoard()) {
 
 		return pieceDatCache[&piece].moveSpace & 
 			~gameBoard.getColorBoard(piece.getColor());
 	}
-
+	
 
 	switch (piece.getType()) {
 
@@ -61,11 +61,6 @@ Bitboard Game::genMoves(Piece const& piece) {
 
 	return moveSpace;
 }
-
-//-------------------------
-
-
-
 
 Bitboard Game::genStraightMoves(Piece const& piece) const {
 	Bitboard moveSpace = 0x00;
@@ -173,7 +168,7 @@ Bitboard Game::genPawnMoves(Piece const& piece) const {
 	if (!piece.hasMoved() && !(moveTile & gameBoard.getWholeBoard()))
 		moveSpace |= moveTile;
 
-	moveSpace |= genPawnThreat(piece) & gameBoard.getColorBoard(piece.getColor());
+	moveSpace |= genPawnThreat(piece) & gameBoard.getColorBoard(!piece.getColor());
 
 	return moveSpace;
 }
@@ -259,10 +254,15 @@ Bitboard Game::getMovesFromPos(Pos pos) {
 	return genMoves(gameBoard.getPiece(pos));
 }
 
-//NEEDS to be optimized
-bool Game::isCheck_(Color color, Pos kingPos) {
+
+bool Game::isCheck_(Color color) {
+	return isCheck_(color, std::nullopt);
+}
+
+
+bool Game::isCheck_(Color color, std::optional<Pos> kingPosHint) {
 	Bitboard threatBB = 0;
-	Bitboard kingBB = kingPos.asBitBoard();
+	Bitboard kingBB = kingPosHint.has_value() ? kingPosHint.value().asBitBoard() : 0;
 
 	for (uint8_t col = 0; col < 8; col++) {
 		for (uint8_t row = 0; row < 8; row++) {

@@ -3,6 +3,7 @@
 #include <tuple>
 #include "Pieces/Piece.hpp"
 #include "Gameboard.hpp"
+#include <optional>
 #include <iostream>
 
 class Game {
@@ -38,8 +39,10 @@ class Game {
 	it points upwards or downwards*/
 	Bitboard genMoveSpacePart(Bitboard rangePart, bool spanUp) const;
 
+	//NEEEEEEDS to be optimized!
+	bool isCheck_(Color color, std::optional<Pos> kingPosHint);
 	//Assumes current king position if no position arg is passed
-	bool isCheck_(Color color, Pos kingPos = {255, 255});
+	bool isCheck_(Color color);
 
 	//Exclusively used for check detecting functions...
 	//doesn't behave the same as the rest of the move gen functions
