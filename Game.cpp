@@ -14,7 +14,8 @@ Bitboard Game::genMoves(Piece const& piece) {
 	Bitboard moveSpace = 0x00;
 	
 	if (pieceDatCache[&piece].boardIntersect == 
-		piece.getMoveRange() & gameBoard.getWholeBoard()) {
+		piece.getMoveRange() & gameBoard.getWholeBoard() && 
+			piece.getType() != PieceType::King) {
 
 		return pieceDatCache[&piece].moveSpace & 
 			~gameBoard.getColorBoard(piece.getColor());
@@ -211,7 +212,7 @@ void Game::movePiece(Pos start, Pos end) {
 
 //Note: this is ONLY FOR USE BY THE KING
 Bitboard Game::genCastleMoves(Piece const& piece) const {
-	Bitboard castleMask = 0x00;
+	Bitboard castleMask = 0;
 
 	uint8_t const row = piece.getColor() == Color::Black ? 7 : 0;
 
@@ -230,7 +231,7 @@ Bitboard Game::genCastleMoves(Piece const& piece) const {
 	Piece const* king = &gameBoard.getPiece({4, row});
 
 	if (!checkConds(king, PieceType::King))
-		return 0x00;
+		return 0;
 
 	std::pair<Piece const*, Piece const*> rooks = std::make_pair(
 			&gameBoard.getPiece({0, row}), 
