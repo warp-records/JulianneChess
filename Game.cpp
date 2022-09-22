@@ -13,6 +13,7 @@
 Bitboard Game::genMoves(Piece const& piece) {
 	Bitboard moveSpace = 0x00;
 	
+	//Will need to be modified for moves where the king is in check
 	if (pieceDatCache[&piece].boardIntersect == 
 		piece.getMoveRange() & gameBoard.getWholeBoard() && 
 			piece.getType() != PieceType::King) {
@@ -253,11 +254,6 @@ Bitboard Game::genCastleMoves(Piece const& piece) const {
 
 Bitboard Game::getMovesFromPos(Pos pos) {
 	return genMoves(gameBoard.getPiece(pos));
-}
-
-
-bool Game::isCheck_(Color color) {
-	return isCheck_(color, std::nullopt);
 }
 
 
