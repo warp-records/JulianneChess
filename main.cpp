@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <optional>
 #include "Pieces.hpp"
@@ -21,14 +22,27 @@ int main() {
 
 	Game game;
 	
+	std::cout << "\nPs: now you can type \"undo\"" <<
+		" to undo a move!\n" << std::endl;
+
 	while (true) {
-		//outBitBoard(std::cout, game.getBitBoard(), false);
 		std::cout << game.gameOutput();
+
+		std::cout << "\nPosition of piece to move:" << std::endl;
+
+		std::string strIn;
+
+		std::cin >> strIn;
+		if (strIn == "undo") {
+			game.undoMove();
+			continue;
+		}
 
 		Pos piecePos;
 
-		std::cout << "\nPosition of piece to move:" << std::endl;
-		std::cin >> piecePos;
+		std::stringstream ssOut(strIn);
+
+		ssOut >> piecePos;
 
 		Pos endPos;
 

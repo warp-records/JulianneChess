@@ -17,6 +17,9 @@ class Game {
 	
 	//Cache each piece's move space, along with a list of it's
 	//board intersections to check if it's old moves are still valid
+
+	//For optimization reasons, this also stores moves that would put 
+	//the piece's team's king in check even though it is ILLEGAL
 	std::unordered_map<const Piece*, Cache> pieceDatCache;
 	
 	Bitboard genMoves(Piece const& piece);
@@ -40,7 +43,7 @@ class Game {
 	Bitboard genMoveSpacePart(Bitboard rangePart, bool spanUp) const;
 
 	//NEEEEEEDS to be optimized!
-	bool isCheck_(Color color, std::optional<Pos> kingPosHint = std::nullopt);	
+	bool isCheck_(Color color, std::optional<Pos> kingPosHint = std::nullopt);
 
 	//Exclusively used for check detecting functions...
 	//doesn't behave the same as the rest of the move gen functions
@@ -56,6 +59,7 @@ public:
 	Bitboard getBitBoard() const { return gameBoard.getWholeBoard(); }
 
 	void movePiece(Pos start, Pos end);
+	void undoMove() { gameBoard.undoMove(); };
 
 	std::string gameOutput();
 

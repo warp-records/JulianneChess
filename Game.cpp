@@ -7,9 +7,7 @@
 #include "Pieces/PieceMoveTables.hpp"
 
 
-//ok i know its not the best code but like
-//who cares ig youll like figure it out or sum
-//if you wanna read it XD
+//Should this return illegal moves too?
 Bitboard Game::genMoves(Piece const& piece) {
 	Bitboard moveSpace = 0x00;
 	
@@ -147,7 +145,7 @@ Bitboard Game::genMoveSpacePart(Bitboard rangePart, bool spansUp) const {
 Bitboard Game::genPawnMoves(Piece const& piece) const {
 	Bitboard moveSpace = 0x00;
 
-	//Prevent pawnms on one end column of the board
+	//Prevent pawns on one end column of the board
 	//from bleeding into the opposite column
 	Bitboard constexpr rightClip = 0xFEFEFEFEFEFEFEFE;
 	Bitboard constexpr leftClip  = 0X7F7F7F7F7F7F7F7F;
@@ -167,7 +165,7 @@ Bitboard Game::genPawnMoves(Piece const& piece) const {
 	moveTile = movesUp ? 
 		piece.getBBoard() << 16 : piece.getBBoard() >> 16;
 
-	if (!piece.hasMoved() && !(moveTile & gameBoard.getWholeBoard()))
+	if (!piece.hasMoved && !(moveTile & gameBoard.getWholeBoard()))
 		moveSpace |= moveTile;
 
 	moveSpace |= genPawnThreat(piece) & gameBoard.getColorBoard(!piece.getColor());
@@ -226,7 +224,7 @@ Bitboard Game::genCastleMoves(Piece const& piece) const {
 
 	auto checkConds = [&](Piece const* piece, PieceType type, Bitboard mask = 0x00) -> bool {
 		return piece && piece->getType() == type && 
-			!piece->hasMoved() && !(gameBoard.getWholeBoard() & mask);
+			!piece->hasMoved && !(gameBoard.getWholeBoard() & mask);
 	};
 
 	Piece const* king = &gameBoard.getPiece({4, row});
@@ -284,7 +282,6 @@ bool Game::isCheck_(Color color, std::optional<Pos> kingPosHint) {
 
 	return false;
 }
-
 
 std::string Game::gameOutput() {
 	std::ostringstream stream;
