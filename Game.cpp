@@ -199,14 +199,19 @@ Bitboard Game::genKingMoves(Piece const& piece) const  {
 
 
 void Game::movePiece(Pos start, Pos end) {
+	Piece const& piece = gameBoard.getPiece(start);
 
 	if (!(genMoves(gameBoard.getPiece(start)) & end.asBitBoard())) {
-		std::cerr << "Error: invalid move" << std::endl;
-		//throw std::exception();
+		std::cerr << "Error: illegal move" << std::endl;
 		return;
 	}
 
 	gameBoard.movePiece(start, end);
+	if (isCheck(piece.getColor())) {
+		std::cerr << "Error: illegal move" << std::endl;
+		gameBoard.undoMove();
+		return;
+	}
 }
 
 //Note: this is ONLY FOR USE BY THE KING
@@ -255,7 +260,7 @@ Bitboard Game::getMovesFromPos(Pos pos) {
 }
 
 
-bool Game::isCheck_(Color color, std::optional<Pos> kingPosHint) {
+bool Game::isCheck(Color color, std::optional<Pos> kingPosHint) {
 	Bitboard threatBB = 0;
 	Bitboard kingBB = kingPosHint.has_value() ? kingPosHint.value().asBitBoard() : 0;
 
@@ -288,8 +293,8 @@ std::string Game::gameOutput() {
 
 	stream << "Will Smith vs Chris Rock:\n\n";
 	stream << gameBoard;
-	bool blackCheck = isCheck_(Color::Black);
-	bool whiteCheck = isCheck_(Color::White);
+	bool blackCheck = isCheck(Color::Black);
+	bool whiteCheck = isCheck(Color::White);
 
 	if (blackCheck)
 		stream << "Black is in check!" << std::endl;

@@ -43,7 +43,7 @@ class Game {
 	Bitboard genMoveSpacePart(Bitboard rangePart, bool spanUp) const;
 
 	//NEEEEEEDS to be optimized!
-	bool isCheck_(Color color, std::optional<Pos> kingPosHint = std::nullopt);
+	bool isCheck(Color color, std::optional<Pos> kingPosHint = std::nullopt);
 
 	//Exclusively used for check detecting functions...
 	//doesn't behave the same as the rest of the move gen functions
@@ -62,8 +62,6 @@ public:
 	void undoMove() { gameBoard.undoMove(); };
 
 	std::string gameOutput();
-
-	bool isCheck() { return isCheck_(Color::Black) && isCheck_(Color::White); } 
 
 	Game();
 };
