@@ -60,6 +60,7 @@ public:
 
 	void movePiece(Pos start, Pos end);
 	void undoMove() { gameBoard.undoMove(); };
+	void redoMove() { gameBoard.redoMove(); }
 
 	std::string gameOutput();
 

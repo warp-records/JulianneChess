@@ -19,11 +19,13 @@ class GameBoard {
 	struct MoveData {
 		Pos start;
 		Pos end;
-		bool firstMove;
+		bool hasMoved;
 		std::optional<Piece*> removedPiece;
 	};
 
 	std::vector<MoveData> moveHistory;
+
+	std::vector<MoveData>::iterator currMove = moveHistory.end();
 
 	struct Team {
 		Color color;
@@ -62,6 +64,10 @@ public:
 	//will probably be useful for minimax
 	void movePiece(Pos start, Pos end);
 	void undoMove();
+	void redoMove();
+	//Must explicitly speicfy template arguments to function
+	//call since iterators are different types
+	int getNumMoves() const { return std::distance<std::vector<MoveData>::const_iterator>(currMove, moveHistory.end()); }; 
 
 	void castleMove(bool kingSide);
 

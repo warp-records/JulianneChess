@@ -23,7 +23,7 @@ int main() {
 	Game game;
 	
 	std::cout << "\nPs: now you can type \"undo\"" <<
-		" to undo a move!\n" << std::endl;
+		" to undo a move, or \"redo\" to redo a move!\n" << std::endl;
 
 	while (true) {
 		std::cout << game.gameOutput();
@@ -33,8 +33,12 @@ int main() {
 		std::string strIn;
 
 		std::cin >> strIn;
+
 		if (strIn == "undo") {
 			game.undoMove();
+			continue;
+		} else if (strIn == "redo") {
+			game.redoMove();
 			continue;
 		}
 

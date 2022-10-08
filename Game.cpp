@@ -3,6 +3,7 @@
 #include <array>
 #include <algorithm>
 #include <sstream>
+#include <cmath>
 #include "Game.hpp"
 #include "Pieces/PieceMoveTables.hpp"
 
@@ -185,6 +186,48 @@ Bitboard Game::genPawnThreat(Piece const& piece) const {
 	threatBB |= movesUp ? 
 		piece.getBBoard() << 7 : piece.getBBoard() >> 7;
 
+	if (gameBoard.getNumMoves() <= 1)
+		return threatBB;
+
+	
+	//en passe
+	Pos adjRight({uint8_t (piece.getPos().column + 1), piece.getPos().row});
+	Pos adjLeft({uint8_t (piece.getPos().column - 1), piece.getPos().row});
+
+	if (piece.getPos().column < 7 && gameBoard.squareOccupied(adjRight)) {
+
+		Piece const& adjPiece = gameBoard.getPiece(adjRight);
+		//this is dirty as fuck
+		const_cast<Game*>(this)->undoMove();
+
+		if (adjPiece.getType() == PieceType::Pawn && 
+			adjPiece.getColor() != piece.getColor() &&
+			std::abs(adjPiece.getPos().row - adjRight.row) == 2) {
+
+
+			threatBB |= movesUp ? piece.getBBoard() << 7 : piece.getBBoard() >> 9;
+		}
+
+		//redo the move we undid while processing
+		const_cast<Game*>(this)->gameBoard.redoMove();
+	}
+
+	if (piece.getPos().column > 0 && gameBoard.squareOccupied(adjLeft)) {
+
+		Piece const& adjPiece = gameBoard.getPiece(adjLeft);
+		const_cast<Game*>(this)->undoMove();
+
+		if (adjPiece.getType() == PieceType::Pawn && 
+			adjPiece.getColor() != piece.getColor() &&
+			std::abs(adjPiece.getPos().row - adjLeft.row) == 2) {
+
+
+			threatBB |= movesUp ? piece.getBBoard() << 9 : piece.getBBoard() >> 7;
+		}
+
+		const_cast<Game*>(this)->gameBoard.redoMove();
+	}
+
 	return threatBB;
 }
 
@@ -261,6 +304,7 @@ Bitboard Game::getMovesFromPos(Pos pos) {
 
 
 bool Game::isCheck(Color color, std::optional<Pos> kingPosHint) {
+	
 	Bitboard threatBB = 0;
 	Bitboard kingBB = kingPosHint.has_value() ? kingPosHint.value().asBitBoard() : 0;
 
@@ -284,6 +328,7 @@ bool Game::isCheck(Color color, std::optional<Pos> kingPosHint) {
 			}
 		}
 	}
+	
 
 	return false;
 }
@@ -293,13 +338,11 @@ std::string Game::gameOutput() {
 
 	stream << "Will Smith vs Chris Rock:\n\n";
 	stream << gameBoard;
-	bool blackCheck = isCheck(Color::Black);
-	bool whiteCheck = isCheck(Color::White);
 
-	if (blackCheck)
+	if (isCheck(Color::Black))
 		stream << "Black is in check!" << std::endl;
 
-	if (whiteCheck)
+	if (isCheck(Color::White))
 		stream << "White is in check!" << std::endl;
 
 	return stream.str();

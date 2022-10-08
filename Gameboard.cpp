@@ -61,8 +61,19 @@ Bitboard GameBoard::getColorBoard(Color color) const {
 	return color == Color::Black ? black.teamBitBoard : white.teamBitBoard;
 }
 
-//Note: NEEDS to be changed
+//For some reason, this is getting called with
+//the same start and end position somewhere...
 void GameBoard::movePiece(Pos start, Pos end) {
+	//Invalidate future moves if a move was undone
+	//and a new move was made from that position
+	if (moveHistory.size() > 0  && currMove != moveHistory.end() && 
+		(start != currMove->start || end != currMove->end)) {
+
+		moveHistory.erase(currMove, moveHistory.end());
+	}
+
+	//currMove++;
+
 	Piece* piece = getSquare(start);
 
 	//Handle castle
@@ -80,10 +91,24 @@ void GameBoard::movePiece(Pos start, Pos end) {
 	//detect castling
 	MoveData moveData { start, end, piece->hasMoved, std::nullopt };
 
+	//Handle en passe
+	if (piece->getType() == PieceType::Pawn && 
+		std::abs(start.column - end.column) == 1 && !squareOccupied(end)) {
+		bool movesUp = piece->getColor() == Color::White;
+
+		Pos capturedSquare = movesUp ? 
+			Pos{end.column, uint8_t (end.row - 1)} : Pos{end.column, uint8_t (end.row + 1)};
+
+		moveData.removedPiece.emplace(getSquare(capturedSquare));
+		getSquare(capturedSquare) = nullptr;
+	}
+
+
 	if (squareOccupied(end)) 
 		moveData.removedPiece.emplace(getSquare(end));
 
 	moveHistory.push_back(moveData);
+	currMove = moveHistory.end();
 
 	piece->setPos(end);
 	piece->hasMoved = true;
@@ -107,14 +132,20 @@ void GameBoard::movePiece(Pos start, Pos end) {
 
 //TODO: add support for pawn promotions
 void GameBoard::undoMove() {
-	MoveData lastMove = moveHistory.back();
+
+	if (moveHistory.size() == 0)
+		throw std::exception();
+
+	currMove--;
+
+	MoveData lastMove = *currMove;
 
 	Piece* piece = getSquare(lastMove.end);
 	getSquare(lastMove.start) = piece;
 	getSquare(lastMove.end) = nullptr;
 
 	piece->setPos(lastMove.start);
-	piece->hasMoved = lastMove.firstMove;
+	piece->hasMoved = lastMove.hasMoved;
 
 	Team& teamData = piece->getColor() == Color::Black ? black : white;
 
@@ -123,19 +154,25 @@ void GameBoard::undoMove() {
 
 	//You gotta alter this pawn promotions
 	if (lastMove.removedPiece.has_value()) {
-		getSquare(lastMove.end) = lastMove.removedPiece.value();
+		Piece* capturedPiece = lastMove.removedPiece.value();
+		getSquare(capturedPiece->getPos()) = capturedPiece;
 
 		Team& enemyData = piece->getColor() == Color::Black ? white : black;
-		enemyData.teamBitBoard |= lastMove.end.asBitBoard();
+		enemyData.teamBitBoard |= capturedPiece->getPos().asBitBoard();
 	}
-
-	moveHistory.pop_back();
 
 	if (piece->getType() == PieceType::King &&
 		std::abs(lastMove.start.column - lastMove.end.column) > 1) {
 
 		undoMove();
 	}
+}
+
+void GameBoard::redoMove() {
+	if (currMove == moveHistory.end())
+		throw std::exception();
+
+	movePiece(currMove->start, currMove->end);
 }
 
 bool squareOccupied(Pos pos);

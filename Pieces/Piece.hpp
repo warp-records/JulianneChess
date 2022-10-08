@@ -33,6 +33,9 @@ struct Pos {
 
 		return bb;
 	}
+
+	bool operator==(Pos& p) { return p.column == column && p.row == row; }
+	bool operator!=(Pos& p) { return !operator==(p); }
 };
 
 std::ostream& operator<<(std::ostream& os, Pos pos);
