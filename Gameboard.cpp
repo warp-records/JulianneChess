@@ -66,10 +66,12 @@ Bitboard GameBoard::getColorBoard(Color color) const {
 void GameBoard::movePiece(Pos start, Pos end) {
 	//Invalidate future moves if a move was undone
 	//and a new move was made from that position
-	if (moveHistory.size() > 0  && currMove != moveHistory.end() && 
-		(start != currMove->start || end != currMove->end)) {
+	bool repeatMove = moveHistory.size() > 0 &&
+		(start == currMove->start || end == currMove->end);
 
-		moveHistory.erase(currMove, moveHistory.end());
+	if (!repeatMove && currMove != moveHistory.end()) {
+
+		moveHistory.erase(currMove+1, moveHistory.end());
 	}
 
 	//currMove++;
@@ -107,8 +109,12 @@ void GameBoard::movePiece(Pos start, Pos end) {
 	if (squareOccupied(end)) 
 		moveData.removedPiece.emplace(getSquare(end));
 
-	moveHistory.push_back(moveData);
-	currMove = moveHistory.end();
+	bool futureHistory = currMove != moveHistory.end();
+
+	if (!repeatMove)	
+		moveHistory.push_back(moveData);
+
+	currMove = (futureHistory ? currMove+1 : moveHistory.end());
 
 	piece->setPos(end);
 	piece->hasMoved = true;
