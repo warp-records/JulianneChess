@@ -82,18 +82,16 @@ void GameBoard::movePiece(Pos start, Pos end) {
 
 	if (isCastle) {
 
-		if (repeatMove)
-			currMove--;
+		if (repeatMove) {
+			std::swap(*currMove, *(currMove+1));
+			//currMove--;
+		}
 
 		//Kingside castle if king goes to column 6
 		if (end.column == 6)
 			movePiece({7, start.row}, {5, start.row});
 		else
 			movePiece({0, start.row}, {3, start.row});
-
-		//Neither of these work
-		//currMove++;
-		//currMove--;
 	}
 
 	//Castle must move King last so that undoMove() can
