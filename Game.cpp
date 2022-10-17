@@ -191,6 +191,7 @@ Bitboard Game::genPawnThreat(Piece const& piece) const {
 
 	
 	//en passe
+	/*
 	Pos adjRight({uint8_t (piece.getPos().column + 1), piece.getPos().row});
 	Pos adjLeft({uint8_t (piece.getPos().column - 1), piece.getPos().row});
 
@@ -227,6 +228,7 @@ Bitboard Game::genPawnThreat(Piece const& piece) const {
 
 		const_cast<Game*>(this)->gameBoard.redoMove();
 	}
+	*/
 
 	return threatBB;
 }
