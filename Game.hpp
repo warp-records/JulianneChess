@@ -10,6 +10,8 @@ class Game {
 
 	GameBoard gameBoard;
 
+	int numMoves = 0;
+
 	struct Cache {
 		Bitboard boardIntersect;
 		Bitboard moveSpace;
@@ -59,8 +61,8 @@ public:
 	Bitboard getBitBoard() const { return gameBoard.getWholeBoard(); }
 
 	void movePiece(Pos start, Pos end);
-	void undoMove() { gameBoard.undoMove(); };
-	void redoMove() { gameBoard.redoMove(); }
+	void undoMove() { gameBoard.undoMove(); numMoves--; }
+	void redoMove() { gameBoard.redoMove(); numMoves++; }
 
 	std::string gameOutput();
 

@@ -67,26 +67,33 @@ void GameBoard::movePiece(Pos start, Pos end) {
 	//Invalidate future moves if a move was undone
 	//and a new move was made from that position
 	bool repeatMove = moveHistory.size() > 0 &&
-		(start == currMove->start || end == currMove->end);
+		(start == currMove->start && end == currMove->end);
 
 	if (!repeatMove && currMove != moveHistory.end()) {
 
 		moveHistory.erase(currMove+1, moveHistory.end());
 	}
 
-	//currMove++;
-
 	Piece* piece = getSquare(start);
 
 	//Handle castle
-	if (piece->getType() == PieceType::King && 
-		std::abs(start.column - end.column) > 1) {
+	bool isCastle = piece->getType() == PieceType::King && 
+		std::abs(start.column - end.column) > 1;
+
+	if (isCastle) {
+
+		if (repeatMove)
+			currMove--;
 
 		//Kingside castle if king goes to column 6
 		if (end.column == 6)
 			movePiece({7, start.row}, {5, start.row});
 		else
 			movePiece({0, start.row}, {3, start.row});
+
+		//Neither of these work
+		//currMove++;
+		//currMove--;
 	}
 
 	//Castle must move King last so that undoMove() can
@@ -139,14 +146,26 @@ void GameBoard::movePiece(Pos start, Pos end) {
 //TODO: add support for pawn promotions
 void GameBoard::undoMove() {
 
-	if (moveHistory.size() == 0)
+	if (currMove == moveHistory.begin())
 		throw std::exception();
-
+	//Decrementing again DOESNT WOKR FHADJIFBSDADSABK
 	currMove--;
 
 	MoveData lastMove = *currMove;
 
 	Piece* piece = getSquare(lastMove.end);
+
+	if (piece->getType() == PieceType::King &&
+		std::abs(lastMove.start.column - lastMove.end.column) > 1) {
+
+		undoMove();
+		
+		currMove++;
+		lastMove = *currMove;
+
+		//std::swap(*currMove, *(currMove-1));
+	}
+
 	getSquare(lastMove.start) = piece;
 	getSquare(lastMove.end) = nullptr;
 
@@ -158,19 +177,13 @@ void GameBoard::undoMove() {
 	teamData.teamBitBoard &= ~lastMove.end.asBitBoard();
 	teamData.teamBitBoard |= lastMove.start.asBitBoard();
 
-	//You gotta alter this pawn promotions
+	//You gotta alter this for pawn promotions
 	if (lastMove.removedPiece.has_value()) {
 		Piece* capturedPiece = lastMove.removedPiece.value();
 		getSquare(capturedPiece->getPos()) = capturedPiece;
 
 		Team& enemyData = piece->getColor() == Color::Black ? white : black;
 		enemyData.teamBitBoard |= capturedPiece->getPos().asBitBoard();
-	}
-
-	if (piece->getType() == PieceType::King &&
-		std::abs(lastMove.start.column - lastMove.end.column) > 1) {
-
-		undoMove();
 	}
 }
 

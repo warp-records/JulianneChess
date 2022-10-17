@@ -186,7 +186,7 @@ Bitboard Game::genPawnThreat(Piece const& piece) const {
 	threatBB |= movesUp ? 
 		piece.getBBoard() << 7 : piece.getBBoard() >> 7;
 
-	if (gameBoard.getNumMoves() <= 1)
+	if (numMoves <= 1)
 		return threatBB;
 
 	
@@ -250,11 +250,15 @@ void Game::movePiece(Pos start, Pos end) {
 	}
 
 	gameBoard.movePiece(start, end);
+	numMoves++;
+
+	/*
 	if (isCheck(piece.getColor())) {
 		std::cerr << "Error: illegal move" << std::endl;
 		gameBoard.undoMove();
 		return;
 	}
+	*/
 }
 
 //Note: this is ONLY FOR USE BY THE KING
@@ -338,12 +342,14 @@ std::string Game::gameOutput() {
 
 	stream << "Will Smith vs Chris Rock:\n\n";
 	stream << gameBoard;
-
+	
+	/*	
 	if (isCheck(Color::Black))
 		stream << "Black is in check!" << std::endl;
 
 	if (isCheck(Color::White))
 		stream << "White is in check!" << std::endl;
+	*/
 
 	return stream.str();
 }

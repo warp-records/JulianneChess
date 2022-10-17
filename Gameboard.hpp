@@ -25,6 +25,8 @@ class GameBoard {
 
 	std::vector<MoveData> moveHistory;
 
+	//Always points to one move ahead of the last move,
+	//or to end()
 	std::vector<MoveData>::iterator currMove = moveHistory.end();
 
 	struct Team {
@@ -67,7 +69,7 @@ public:
 	void redoMove();
 	//Must explicitly speicfy template arguments to function
 	//call since iterators are different types
-	int getNumMoves() const { return std::distance<std::vector<MoveData>::const_iterator>(currMove, moveHistory.end()); }; 
+	//int getNumMoves() const { return std::distance<std::vector<MoveData>::const_iterator>(currMove, moveHistory.end()); }; 
 
 	void castleMove(bool kingSide);
 
