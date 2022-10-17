@@ -84,7 +84,6 @@ void GameBoard::movePiece(Pos start, Pos end) {
 
 		if (repeatMove) {
 			std::swap(*currMove, *(currMove+1));
-			//currMove--;
 		}
 
 		//Kingside castle if king goes to column 6
@@ -143,8 +142,6 @@ void GameBoard::movePiece(Pos start, Pos end) {
 
 //TODO: add support for pawn promotions
 void GameBoard::undoMove() {
-	//
-	bool rookCastleFlag = false;
 
 	if (currMove == moveHistory.begin())
 		throw std::exception();
@@ -160,7 +157,6 @@ void GameBoard::undoMove() {
 
 		undoMove();
 		
-		//currMove++;
 		lastMove = *(currMove+1);
 
 		std::swap(*currMove, *(currMove+1));

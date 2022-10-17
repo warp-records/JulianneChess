@@ -191,6 +191,8 @@ Bitboard Game::genPawnThreat(Piece const& piece) const {
 
 	
 	//en passe
+
+	//Sometimes causes seg fault and doesn't work yet... disabled for now
 	/*
 	Pos adjRight({uint8_t (piece.getPos().column + 1), piece.getPos().row});
 	Pos adjLeft({uint8_t (piece.getPos().column - 1), piece.getPos().row});
@@ -254,13 +256,13 @@ void Game::movePiece(Pos start, Pos end) {
 	gameBoard.movePiece(start, end);
 	numMoves++;
 
-	/*
+	
 	if (isCheck(piece.getColor())) {
 		std::cerr << "Error: illegal move" << std::endl;
-		gameBoard.undoMove();
+		undoMove();
 		return;
 	}
-	*/
+	
 }
 
 //Note: this is ONLY FOR USE BY THE KING
