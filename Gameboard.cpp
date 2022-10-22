@@ -71,7 +71,7 @@ void GameBoard::movePiece(Pos start, Pos end) {
 
 	if (!repeatMove && currMove != moveHistory.end()) {
 
-		moveHistory.erase(currMove+1, moveHistory.end());
+		moveHistory.erase(currMove, moveHistory.end());
 	}
 
 	Piece* piece = getSquare(start);
