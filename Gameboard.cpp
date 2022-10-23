@@ -145,7 +145,7 @@ void GameBoard::undoMove() {
 
 	if (currMove == moveHistory.begin())
 		throw std::exception();
-	//Decrementing again DOESNT WOKR FHADJIFBSDADSABK
+	
 	currMove--;
 
 	MoveData lastMove = *currMove;
