@@ -3,13 +3,28 @@
 #include <tuple>
 #include "Pieces/Piece.hpp"
 #include "Gameboard.hpp"
+#include <optional>
 #include <iostream>
 
 class Game {
+
 	GameBoard gameBoard;
 
+	int numMoves = 0;
+
+	struct Cache {
+		Bitboard boardIntersect;
+		Bitboard moveSpace;
+	};
 	
-	Bitboard genMoves(Piece const& piece) const;
+	//Cache each piece's move space, along with a list of it's
+	//board intersections to check if it's old moves are still valid
+
+	//For optimization reasons, this also stores moves that would put 
+	//the piece's team's king in check even though it is ILLEGAL
+	std::unordered_map<const Piece*, Cache> pieceDatCache;
+	
+	Bitboard genMoves(Piece const& piece);
 
 	//Generate movespace and attack possibilities pair
 
@@ -29,12 +44,26 @@ class Game {
 	it points upwards or downwards*/
 	Bitboard genMoveSpacePart(Bitboard rangePart, bool spanUp) const;
 
+	//NEEEEEEDS to be optimized!
+	bool isCheck(Color color, std::optional<Pos> kingPosHint = std::nullopt);
+
+	//Exclusively used for check detecting functions...
+	//doesn't behave the same as the rest of the move gen functions
+	Bitboard genPawnThreat(Piece const& piece) const;
+
 public:
 
 	//Debug functions
-	Bitboard getMovesFromPos(Pos pos) const;
+	Bitboard getMovesFromPos(Pos pos);
 	Bitboard getBitBoard() const { return gameBoard.getWholeBoard(); }
-	void movePiece(Pos start, Pos end);
 
-	std::string gameOutput() const;
+	void movePiece(Pos start, Pos end);
+	void undoMove() { gameBoard.undoMove(); 
+		numMoves--; }
+	void redoMove() { gameBoard.redoMove(); 
+		numMoves++; }
+
+	std::string gameOutput();
+
+	Game();
 };

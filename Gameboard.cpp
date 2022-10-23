@@ -11,7 +11,6 @@ GameBoard::GameBoard() {
 
 	for (auto const& piece : black.pieceList)
 		board[piece->getPos().column][piece->getPos().row] = piece.get();
-
 	for (auto const& piece : white.pieceList)
 		board[piece->getPos().column][piece->getPos().row] = piece.get();
 }
@@ -51,25 +50,97 @@ GameBoard::Team::Team(Color _color) {
 	}};
 
 	for (Piece* ptr : tmpArr)
-		pieceList.push_back(PiecePtr(ptr));
+		pieceList.push_back(std::unique_ptr<Piece>(ptr));
 
 	yPos = (color == Color::Black ? 6 : 1);
-	for (uint8_t i = 0; i < 8; i++)
-		pieceList.push_back(PiecePtr(new Pieces::Pawn(color, {i, yPos})));
 
+	//THIS IS GONNA BREAK!
+	for (uint8_t i = 0; i < 8; i++)
+		pieceList.push_back(std::unique_ptr<Piece>(new Pieces::Pawn(color, {i, yPos})));
 }
 
 Bitboard GameBoard::getColorBoard(Color color) const {
 	return color == Color::Black ? black.teamBitBoard : white.teamBitBoard;
 }
 
-//Note: NEEDS to be changed
+//For some reason, this is getting called with
+//the same start and end position somewhere...
 void GameBoard::movePiece(Pos start, Pos end) {
-	Piece* piece = board[start.column][start.row];
+	//Invalidate future moves if a move was undone
+	//and a new move was made from that position
+	bool repeatMove = moveHistory.size() > 0 &&
+		(start == currMove->start && end == currMove->end);
+
+	if (!repeatMove && currMove != moveHistory.end()) {
+
+		moveHistory.erase(currMove, moveHistory.end());
+	}
+
+	Piece* piece = getSquare(start);
+
+	//Handle castle
+	bool isCastle = piece->getType() == PieceType::King && 
+		std::abs(start.column - end.column) > 1;
+
+	if (isCastle) {
+
+		if (repeatMove) {
+			std::swap(*currMove, *(currMove+1));
+		}
+
+		//Kingside castle if king goes to column 6
+		if (end.column == 6)
+			movePiece({7, start.row}, {5, start.row});
+		else
+			movePiece({0, start.row}, {3, start.row});
+	}
+
+	//Castle must move King last so that undoMove() can
+	//detect castling
+	MoveData moveData { start, end, piece->hasMoved, std::nullopt };
+
+	//Handle en passe
+	if (piece->getType() == PieceType::Pawn && 
+		std::abs(start.column - end.column) == 1 && !squareOccupied(end)) {
+		bool movesUp = piece->getColor() == Color::White;
+
+		Pos capturedSquare = movesUp ? 
+			Pos{end.column, uint8_t (end.row - 1)} : Pos{end.column, uint8_t (end.row + 1)};
+
+		moveData.removedPiece.emplace(getSquare(capturedSquare));
+		getSquare(capturedSquare) = nullptr;
+	}
+
+
+	if (squareOccupied(end)) 
+		moveData.removedPiece.emplace(getSquare(end));
+
+	piece->hasMoved = true;
+
+	if (piece->getType() == PieceType::Pawn) {
+		uint8_t endRow = piece->getColor() == Color::Black ? 0 : 7;
+
+		if (end.row == endRow) {
+			//Is manual memory management a blunder?
+			Color color = piece->getColor();
+			delete piece;
+
+			piece = new Pieces::Queen(color, start);
+			piece->hasMoved = false;
+			piece->pawnPromoted = true;
+			getSquare(start) = piece;
+		}
+	}
+
+	bool futureHistory = currMove != moveHistory.end();
+
+	if (!repeatMove)	
+		moveHistory.push_back(moveData);
+
+	currMove = (futureHistory ? currMove+1 : moveHistory.end());
 
 	piece->setPos(end);
-	piece->setMoved();
-
+	
 	//Mark the square from the starting piece pos empty
 	if (piece->getColor() == Color::Black) {
 		black.teamBitBoard &= ~start.asBitBoard();
@@ -83,36 +154,72 @@ void GameBoard::movePiece(Pos start, Pos end) {
 		black.teamBitBoard &= ~end.asBitBoard();
 	}
 
-
-	board[end.column][end.row] = board[start.column][start.row];
-	board[start.column][start.row] = nullptr;
+	getSquare(end) = getSquare(start);
+	getSquare(start) = nullptr;
 }
 
-/*
-std::ostream& operator<<(std::ostream& os, GameBoard const& gameBoard) {
-	std::string buff(64, ' ');
+//TODO: add support for pawn promotions
+void GameBoard::undoMove() {
 
-	std::unordered_map<PieceType, char> const pieceSymbolMap {
-		{ PieceType::King, 'k' },
-		{ PieceType::Queen, 'q'},
-		{ PieceType::Rook, 'r' },
-		{ PieceType::Bishop, 'b' },
-		{ PieceType::Knight, 'n' },
-		{ PieceType::Pawn, 'p' }
-	};
+	if (currMove == moveHistory.begin())
+		throw std::exception();
+	
+	currMove--;
 
-	for (auto peice : black.pieceList) {
-		buff[piece->getPos().column + 
-			piece->getPos().row * 8] = pieceSymbolMap[peice->type];
+	MoveData lastMove = *currMove;
+
+	Piece* piece = getSquare(lastMove.end);
+
+	if (piece->getType() == PieceType::King &&
+		std::abs(lastMove.start.column - lastMove.end.column) > 1) {
+
+		undoMove();
+		
+		lastMove = *(currMove+1);
+
+		std::swap(*currMove, *(currMove+1));
 	}
 
-	for (auto peice : white.pieceList) {
-		buff[piece->getPos().column + 
-			piece->getPos().row * 8] = std::toupper(pieceSymbolMap[peice->type]);
+	if (piece->pawnPromoted && piece->hasMoved == false) {
+		uint8_t endRow = piece->getColor() == Color::Black ? 0 : 7;
+
+		if (lastMove.end.row == endRow) {
+			//Is manual memory management a blunder?
+			Color color = piece->getColor();
+			delete piece;
+
+			piece = new Pieces::Pawn(color, lastMove.end);
+			getSquare(lastMove.end) = piece;
+		}
 	}
 
-	return os << buff;
-}*/
+	getSquare(lastMove.start) = piece;
+	getSquare(lastMove.end) = nullptr;
+
+	piece->setPos(lastMove.start);
+	piece->hasMoved = lastMove.hasMoved;
+
+	Team& teamData = piece->getColor() == Color::Black ? black : white;
+
+	teamData.teamBitBoard &= ~lastMove.end.asBitBoard();
+	teamData.teamBitBoard |= lastMove.start.asBitBoard();
+
+	//You gotta alter this for pawn promotions
+	if (lastMove.removedPiece.has_value()) {
+		Piece* capturedPiece = lastMove.removedPiece.value();
+		getSquare(capturedPiece->getPos()) = capturedPiece;
+
+		Team& enemyData = piece->getColor() == Color::Black ? white : black;
+		enemyData.teamBitBoard |= capturedPiece->getPos().asBitBoard();
+	}
+}
+
+void GameBoard::redoMove() {
+	if (currMove == moveHistory.end())
+		throw std::exception();
+
+	movePiece(currMove->start, currMove->end);
+}
 
 bool squareOccupied(Pos pos);
 

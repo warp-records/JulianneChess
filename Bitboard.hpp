@@ -31,4 +31,3 @@ typedef uint64_t Bitboard;
 
 
 std::ostream& outBitBoard(std::ostream& os, Bitboard board, bool debugBoard = true);
-typedef uint64_t Bitboard;

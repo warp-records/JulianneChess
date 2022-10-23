@@ -3,12 +3,24 @@
 #include <array>
 #include <algorithm>
 #include <sstream>
+#include <cmath>
 #include "Game.hpp"
 #include "Pieces/PieceMoveTables.hpp"
 
 
-Bitboard Game::genMoves(Piece const& piece) const {
+//Should this return illegal moves too?
+Bitboard Game::genMoves(Piece const& piece) {
 	Bitboard moveSpace = 0x00;
+	
+	//Will need to be modified for moves where the king is in check
+	if (pieceDatCache[&piece].boardIntersect == 
+		piece.getMoveRange() & gameBoard.getWholeBoard() && 
+			piece.getType() != PieceType::King) {
+
+		return pieceDatCache[&piece].moveSpace & 
+			~gameBoard.getColorBoard(piece.getColor());
+	}
+	
 
 	switch (piece.getType()) {
 
@@ -24,7 +36,6 @@ Bitboard Game::genMoves(Piece const& piece) const {
 
 		case (PieceType::Rook) : {
 			moveSpace = genStraightMoves(piece);
-
 			break;
 		}
 
@@ -44,14 +55,13 @@ Bitboard Game::genMoves(Piece const& piece) const {
 		}
 	}
 
+	pieceDatCache[&piece].boardIntersect = piece.getMoveRange() & gameBoard.getWholeBoard();
+	pieceDatCache[&piece].moveSpace = moveSpace;
+
 	moveSpace &= ~gameBoard.getColorBoard(piece.getColor());
 
 	return moveSpace;
 }
-
-
-
-
 
 Bitboard Game::genStraightMoves(Piece const& piece) const {
 	Bitboard moveSpace = 0x00;
@@ -76,10 +86,8 @@ Bitboard Game::genDiagonalMoves(Piece const& piece) const {
 
 	moveSpace |= genMoveSpacePart(Pieces::MoveTables::upRight
 		[piece.getPos().column][piece.getPos().row], true);
-
 	moveSpace |= genMoveSpacePart(Pieces::MoveTables::upLeft
 		[piece.getPos().column][piece.getPos().row], true);
-
 	moveSpace |= genMoveSpacePart(Pieces::MoveTables::downRight
 		[piece.getPos().column][piece.getPos().row], false);
 
@@ -127,12 +135,15 @@ Bitboard Game::genMoveSpacePart(Bitboard rangePart, bool spansUp) const {
 	return moveSpacePart;
 }
 
-
 Bitboard Game::genPawnMoves(Piece const& piece) const {
 	Bitboard moveSpace = 0x00;
 
-	bool movesUp = piece.getColor() == Color::White;
+	//Prevent pawns on one end column of the board
+	//from bleeding into the opposite column
+	Bitboard constexpr rightClip = 0xFEFEFEFEFEFEFEFE;
+	Bitboard constexpr leftClip  = 0X7F7F7F7F7F7F7F7F;
 
+	bool movesUp = piece.getColor() == Color::White;
 
 	/*No need to check if the pawn is at the end of the board,
 	since it will always be promoted to a different piece*/
@@ -142,34 +153,85 @@ Bitboard Game::genPawnMoves(Piece const& piece) const {
 	moveTile = movesUp ? 
 		piece.getBBoard() << 8 : piece.getBBoard() >> 8;
 
-	if (!(moveTile & gameBoard.getWholeBoard()))
-		moveSpace |= moveTile;
-
+	moveSpace |= (moveTile & ~gameBoard.getWholeBoard());
 
 	moveTile = movesUp ? 
 		piece.getBBoard() << 16 : piece.getBBoard() >> 16;
 
-	if (!piece.hasMoved() && !(moveTile & gameBoard.getWholeBoard()))
+	if (!piece.hasMoved && !(moveTile & gameBoard.getWholeBoard()))
 		moveSpace |= moveTile;
 
+	moveSpace |= genPawnThreat(piece);
+
+	return moveSpace;
+}
+
+Bitboard Game::genPawnThreat(Piece const& piece) const {
+	Bitboard constexpr rightClip = 0xFEFEFEFEFEFEFEFE;
+	Bitboard constexpr leftClip  = 0X7F7F7F7F7F7F7F7F;
+
+	bool movesUp = piece.getColor() == Color::White;
+
+	Bitboard threatBB = 0x00;
+	Bitboard moveTile;
+
+	moveTile = movesUp ? 
+		(piece.getBBoard() << 9)&rightClip : (piece.getBBoard() >> 9)&leftClip;
+
+	threatBB |= moveTile & gameBoard.getColorBoard(!piece.getColor());
 
 	moveTile = movesUp ? 
 		piece.getBBoard() << 7 : piece.getBBoard() >> 7;
 
-	if (moveTile & gameBoard.getColorBoard(!piece.getColor())) {
-		moveSpace |= moveTile;
+	threatBB |= moveTile & gameBoard.getColorBoard(!piece.getColor());
+
+	if (numMoves == 0)
+		return threatBB;
+
+	
+	//en passe
+
+	//Sometimes causes seg fault and doesn't work yet... disabled for now
+	
+	Pos adjRight({uint8_t (piece.getPos().column + 1), piece.getPos().row});
+	Pos adjLeft({uint8_t (piece.getPos().column - 1), piece.getPos().row});
+
+	if (piece.getPos().column < 7 && gameBoard.squareOccupied(adjRight)) {
+
+		Piece const& adjPiece = gameBoard.getPiece(adjRight);
+		//this is dirty as fuck
+		const_cast<Game*>(this)->gameBoard.undoMove();
+
+		if (adjPiece.getType() == PieceType::Pawn && 
+			adjPiece.getColor() != piece.getColor() &&
+			std::abs(adjPiece.getPos().row - adjRight.row) == 2) {
+
+
+			threatBB |= movesUp ? piece.getBBoard() << 7 : piece.getBBoard() >> 9;
+		}
+
+		//redo the move we undid while processing
+		const_cast<Game*>(this)->gameBoard.redoMove();
 	}
 
+	if (piece.getPos().column > 0 && gameBoard.squareOccupied(adjLeft)) {
 
-	moveTile = movesUp ? 
-		piece.getBBoard() << 9 : piece.getBBoard() >> 9;
+		Piece const& adjPiece = gameBoard.getPiece(adjLeft);
+		const_cast<Game*>(this)->gameBoard.undoMove();
 
-	if (moveTile & gameBoard.getColorBoard(!piece.getColor())) {
-		moveSpace |= moveTile;
+		if (adjPiece.getType() == PieceType::Pawn && 
+			adjPiece.getColor() != piece.getColor() &&
+			std::abs(adjPiece.getPos().row - adjLeft.row) == 2) {
+
+
+			threatBB |= movesUp ? piece.getBBoard() << 9 : piece.getBBoard() >> 7;
+		}
+
+		const_cast<Game*>(this)->gameBoard.redoMove();
 	}
+	
 
-
-	return moveSpace;
+	return threatBB;
 }
 
 //Should I ditch these?!?
@@ -183,19 +245,27 @@ Bitboard Game::genKingMoves(Piece const& piece) const  {
 
 
 void Game::movePiece(Pos start, Pos end) {
+	Piece const& piece = gameBoard.getPiece(start);
 
 	if (!(genMoves(gameBoard.getPiece(start)) & end.asBitBoard())) {
-		std::cerr << "Error: invalid move" << std::endl;
-		//throw std::exception();
+		std::cerr << "Error: illegal move" << std::endl;
 		return;
 	}
 
 	gameBoard.movePiece(start, end);
+	numMoves++;
+
+	
+	if (isCheck(piece.getColor())) {
+		std::cerr << "Error: illegal move" << std::endl;
+		undoMove();
+	}
+	
 }
 
 //Note: this is ONLY FOR USE BY THE KING
 Bitboard Game::genCastleMoves(Piece const& piece) const {
-	Bitboard castleMask = 0x00;
+	Bitboard castleMask = 0;
 
 	uint8_t const row = piece.getColor() == Color::Black ? 7 : 0;
 
@@ -208,13 +278,13 @@ Bitboard Game::genCastleMoves(Piece const& piece) const {
 
 	auto checkConds = [&](Piece const* piece, PieceType type, Bitboard mask = 0x00) -> bool {
 		return piece && piece->getType() == type && 
-			!piece->hasMoved() && !(gameBoard.getWholeBoard() & mask);
+			!piece->hasMoved && !(gameBoard.getWholeBoard() & mask);
 	};
 
 	Piece const* king = &gameBoard.getPiece({4, row});
 
 	if (!checkConds(king, PieceType::King))
-		return 0x00;
+		return 0;
 
 	std::pair<Piece const*, Piece const*> rooks = std::make_pair(
 			&gameBoard.getPiece({0, row}), 
@@ -234,22 +304,66 @@ Bitboard Game::genCastleMoves(Piece const& piece) const {
 
 
 
-Bitboard Game::getMovesFromPos(Pos pos) const {
+Bitboard Game::getMovesFromPos(Pos pos) {
 	return genMoves(gameBoard.getPiece(pos));
 }
 
 
-//0111k010
+bool Game::isCheck(Color color, std::optional<Pos> kingPosHint) {
+	
+	Bitboard threatBB = 0;
+	Bitboard kingBB = kingPosHint.has_value() ? kingPosHint.value().asBitBoard() : 0;
 
+	for (uint8_t col = 0; col < 8; col++) {
+		for (uint8_t row = 0; row < 8; row++) {
+			if (gameBoard.squareOccupied({col, row})) {
 
+				Piece const& piece = gameBoard.getPiece({col, row});
 
+				if (!kingBB && piece.getType() == PieceType::King && 
+						piece.getColor() == color) { kingBB = piece.getBBoard(); }
 
+				if (piece.getColor() == !color) {
+					//Pawns have distinct attack and normal moves
+					threatBB |= piece.getType() != PieceType::Pawn ? 
+						genMoves(piece) : genPawnThreat(piece);
 
-std::string Game::gameOutput() const {
+					if (threatBB & kingBB)
+						return true;
+				}
+			}
+		}
+	}
+	
+
+	return false;
+}
+
+std::string Game::gameOutput() {
 	std::ostringstream stream;
 
 	stream << "Will Smith vs Chris Rock:\n\n";
 	stream << gameBoard;
+	
+	/*
+	if (isCheck(Color::Black))
+		stream << "Black is in check!" << std::endl;
+
+	if (isCheck(Color::White))
+		stream << "White is in check!" << std::endl;
+	*/
 
 	return stream.str();
+}
+
+
+Game::Game() {
+	for (uint8_t col = 0; col < 8; col++) {
+		for (uint8_t row = 0; row < 8; row++) {
+
+			if (gameBoard.squareOccupied({col, row})) {
+				pieceDatCache.insert({&gameBoard.getPiece({col, row}), {0, 0}});
+			}
+		}
+	}
 }

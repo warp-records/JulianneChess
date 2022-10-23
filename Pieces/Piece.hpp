@@ -25,11 +25,18 @@ struct Pos {
 
 	Bitboard asBitBoard() const {
 		Bitboard bb = 0b1;
-		bb <<= (row*8 + 7 - column); 
+		bb <<= (row*8 + 7 - column);
 
 		return bb;
 	}
+
+	bool operator==(Pos& p) { return p.column == column && p.row == row; }
+	bool operator!=(Pos& p) { return !operator==(p); }
 };
+
+std::ostream& operator<<(std::ostream& os, Pos pos);
+std::istream& operator>>(std::istream& is, Pos& pos);
+
 
 /*This really should be inside the Pieces namespace,
 but adding it would screw with a lot of code*/
@@ -38,8 +45,6 @@ protected:
 	Color color;
 
 	Pos pos;
-
-	bool _hasMoved = false;
 
 public:	
 	virtual PieceType getType() const = 0;
@@ -56,8 +61,10 @@ public:
 
 	Color getColor() const { return color; }
 
-	bool hasMoved() const { return _hasMoved; }
-	void setMoved() { _hasMoved = true; }
+	//Turns out we ended up needing to revert
+	//this value anyway lol...
+	bool hasMoved = false;
+	bool pawnPromoted = false;
 
 	Piece(Color _color, Pos _pos) : 
 		color{_color}, pos{_pos} {}; 
