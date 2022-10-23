@@ -53,6 +53,8 @@ GameBoard::Team::Team(Color _color) {
 		pieceList.push_back(std::unique_ptr<Piece>(ptr));
 
 	yPos = (color == Color::Black ? 6 : 1);
+
+	//THIS IS GONNA BREAK!
 	for (uint8_t i = 0; i < 8; i++)
 		pieceList.push_back(std::unique_ptr<Piece>(new Pieces::Pawn(color, {i, yPos})));
 }
@@ -113,6 +115,23 @@ void GameBoard::movePiece(Pos start, Pos end) {
 	if (squareOccupied(end)) 
 		moveData.removedPiece.emplace(getSquare(end));
 
+	piece->hasMoved = true;
+
+	if (piece->getType() == PieceType::Pawn) {
+		uint8_t endRow = piece->getColor() == Color::Black ? 0 : 7;
+
+		if (end.row == endRow) {
+			//Is manual memory management a blunder?
+			Color color = piece->getColor();
+			delete piece;
+
+			piece = new Pieces::Queen(color, start);
+			piece->hasMoved = false;
+			piece->pawnPromoted = true;
+			getSquare(start) = piece;
+		}
+	}
+
 	bool futureHistory = currMove != moveHistory.end();
 
 	if (!repeatMove)	
@@ -121,8 +140,7 @@ void GameBoard::movePiece(Pos start, Pos end) {
 	currMove = (futureHistory ? currMove+1 : moveHistory.end());
 
 	piece->setPos(end);
-	piece->hasMoved = true;
-
+	
 	//Mark the square from the starting piece pos empty
 	if (piece->getColor() == Color::Black) {
 		black.teamBitBoard &= ~start.asBitBoard();
@@ -160,6 +178,19 @@ void GameBoard::undoMove() {
 		lastMove = *(currMove+1);
 
 		std::swap(*currMove, *(currMove+1));
+	}
+
+	if (piece->pawnPromoted && piece->hasMoved == false) {
+		uint8_t endRow = piece->getColor() == Color::Black ? 0 : 7;
+
+		if (lastMove.end.row == endRow) {
+			//Is manual memory management a blunder?
+			Color color = piece->getColor();
+			delete piece;
+
+			piece = new Pieces::Pawn(color, lastMove.end);
+			getSquare(lastMove.end) = piece;
+		}
 	}
 
 	getSquare(lastMove.start) = piece;

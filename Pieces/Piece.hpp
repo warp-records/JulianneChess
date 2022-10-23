@@ -68,6 +68,7 @@ public:
 	//Turns out we ended up needing to revert
 	//this value anyway lol...
 	bool hasMoved = false;
+	bool pawnPromoted = false;
 
 	Piece(Color _color, Pos _pos) : 
 		color{_color}, pos{_pos} {}; 
