@@ -61,8 +61,10 @@ public:
 	Bitboard getBitBoard() const { return gameBoard.getWholeBoard(); }
 
 	void movePiece(Pos start, Pos end);
-	void undoMove() { gameBoard.undoMove(); numMoves--; }
-	void redoMove() { gameBoard.redoMove(); numMoves++; }
+	void undoMove() { gameBoard.undoMove(); 
+		numMoves--; }
+	void redoMove() { gameBoard.redoMove(); 
+		numMoves++; }
 
 	std::string gameOutput();
 

@@ -169,7 +169,7 @@ Bitboard Game::genPawnMoves(Piece const& piece) const {
 	if (!piece.hasMoved && !(moveTile & gameBoard.getWholeBoard()))
 		moveSpace |= moveTile;
 
-	moveSpace |= genPawnThreat(piece) & gameBoard.getColorBoard(!piece.getColor());
+	moveSpace |= genPawnThreat(piece);
 
 	return moveSpace;
 }
@@ -180,20 +180,27 @@ Bitboard Game::genPawnThreat(Piece const& piece) const {
 
 	bool movesUp = piece.getColor() == Color::White;
 
-	Bitboard threatBB = movesUp ? 
+	Bitboard threatBB = 0x00;
+	Bitboard moveTile;
+
+	moveTile = movesUp ? 
 		(piece.getBBoard() << 9)&rightClip : (piece.getBBoard() >> 9)&leftClip;
 
-	threatBB |= movesUp ? 
+	threatBB |= moveTile & gameBoard.getColorBoard(!piece.getColor());
+
+	moveTile = movesUp ? 
 		piece.getBBoard() << 7 : piece.getBBoard() >> 7;
 
-	if (numMoves <= 1)
+	threatBB |= moveTile & gameBoard.getColorBoard(!piece.getColor());
+
+	if (numMoves == 0)
 		return threatBB;
 
 	
 	//en passe
 
 	//Sometimes causes seg fault and doesn't work yet... disabled for now
-	/*
+	
 	Pos adjRight({uint8_t (piece.getPos().column + 1), piece.getPos().row});
 	Pos adjLeft({uint8_t (piece.getPos().column - 1), piece.getPos().row});
 
@@ -201,7 +208,7 @@ Bitboard Game::genPawnThreat(Piece const& piece) const {
 
 		Piece const& adjPiece = gameBoard.getPiece(adjRight);
 		//this is dirty as fuck
-		const_cast<Game*>(this)->undoMove();
+		const_cast<Game*>(this)->gameBoard.undoMove();
 
 		if (adjPiece.getType() == PieceType::Pawn && 
 			adjPiece.getColor() != piece.getColor() &&
@@ -218,7 +225,7 @@ Bitboard Game::genPawnThreat(Piece const& piece) const {
 	if (piece.getPos().column > 0 && gameBoard.squareOccupied(adjLeft)) {
 
 		Piece const& adjPiece = gameBoard.getPiece(adjLeft);
-		const_cast<Game*>(this)->undoMove();
+		const_cast<Game*>(this)->gameBoard.undoMove();
 
 		if (adjPiece.getType() == PieceType::Pawn && 
 			adjPiece.getColor() != piece.getColor() &&
@@ -230,7 +237,7 @@ Bitboard Game::genPawnThreat(Piece const& piece) const {
 
 		const_cast<Game*>(this)->gameBoard.redoMove();
 	}
-	*/
+	
 
 	return threatBB;
 }
@@ -260,7 +267,6 @@ void Game::movePiece(Pos start, Pos end) {
 	if (isCheck(piece.getColor())) {
 		std::cerr << "Error: illegal move" << std::endl;
 		undoMove();
-		return;
 	}
 	
 }
@@ -347,7 +353,7 @@ std::string Game::gameOutput() {
 	stream << "Will Smith vs Chris Rock:\n\n";
 	stream << gameBoard;
 	
-	/*	
+	/*
 	if (isCheck(Color::Black))
 		stream << "Black is in check!" << std::endl;
 
