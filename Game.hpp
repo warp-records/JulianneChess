@@ -6,12 +6,27 @@
 #include <optional>
 #include <iostream>
 
+enum class GameStatus {
+	WhiteTurn,
+	BlackTurn,
+	BlackWin,
+	WhiteWin,
+	//DrawAgreement,
+	Stalemate
+	//InsuffMaterial,
+	//ThreeFoldRep,
+	//FiftyMove,
+	//DeadPos
+};
+
 class Game {
 
 	GameBoard gameBoard;
 
 	int numMoves = 0;
 
+	GameStatus status = GameStatus::WhiteTurn;
+	
 	struct Cache {
 		Bitboard boardIntersect;
 		Bitboard moveSpace;
@@ -51,6 +66,8 @@ class Game {
 	//doesn't behave the same as the rest of the move gen functions
 	Bitboard genPawnThreat(Piece const& piece) const;
 
+	void updateGameStatus();
+
 public:
 
 	//Debug functions
@@ -58,10 +75,8 @@ public:
 	Bitboard getBitBoard() const { return gameBoard.getWholeBoard(); }
 
 	void movePiece(Pos start, Pos end);
-	void undoMove() { gameBoard.undoMove(); 
-		numMoves--; }
-	void redoMove() { gameBoard.redoMove(); 
-		numMoves++; }
+	void undoMove() { gameBoard.undoMove(); numMoves--; }
+	void redoMove() { gameBoard.redoMove(); numMoves++; }
 
 	std::string gameOutput();
 

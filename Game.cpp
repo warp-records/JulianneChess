@@ -245,12 +245,22 @@ Bitboard Game::genKingMoves(Piece const& piece) const  {
 
 
 void Game::movePiece(Pos start, Pos end) {
+	if (!gameBoard.squareOccupied(start)) {
+		std::cerr << "Error: illegal move" << std::endl;
+		return;
+	}
+
 	Piece const& piece = gameBoard.getPiece(start);
 
 	if (!(genMoves(gameBoard.getPiece(start)) & end.asBitBoard())) {
 		std::cerr << "Error: illegal move" << std::endl;
 		return;
 	}
+
+	if (piece.getColor() != (status == GameStatus::BlackTurn ? Color::Black : Color::White)) {
+		std::cerr << "Error: illegal move" << std::endl;
+		return;
+	} 
 
 	gameBoard.movePiece(start, end);
 	numMoves++;
@@ -259,8 +269,11 @@ void Game::movePiece(Pos start, Pos end) {
 	if (isCheck(piece.getColor())) {
 		std::cerr << "Error: illegal move" << std::endl;
 		undoMove();
+		return;
 	}
-	
+
+	status = (status == GameStatus::BlackTurn ? 
+		GameStatus::WhiteTurn : GameStatus::BlackTurn);
 }
 
 //Note: this is ONLY FOR USE BY THE KING
@@ -343,15 +356,30 @@ std::string Game::gameOutput() {
 	std::ostringstream stream;
 
 	stream << "Will Smith vs Chris Rock:\n\n";
+
+	switch (status) {
+		case (GameStatus::WhiteTurn) : {
+			stream << "White's turn";
+			break;
+		}
+
+		case (GameStatus::BlackTurn) : {
+			stream << "Black's turn";
+			break;
+		}
+	}
+
+	stream << std::endl;
+
+
 	stream << gameBoard;
-	
-	/*
+
 	if (isCheck(Color::Black))
 		stream << "Black is in check!" << std::endl;
 
 	if (isCheck(Color::White))
 		stream << "White is in check!" << std::endl;
-	*/
+	
 
 	return stream.str();
 }
