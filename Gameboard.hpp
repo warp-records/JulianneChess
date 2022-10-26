@@ -60,6 +60,7 @@ public:
 	Bitboard genBitBoard() const;
 	Piece const& getPiece(Pos pos) const { return *(board.at(pos.column).at(pos.row)); }
 	bool squareOccupied(Pos pos) const { return board.at(pos.column).at(pos.row) != nullptr; }
+	Pieces::King const& getKing(Color color) const;
 
 	
 	//Make a move and keep track of move history...

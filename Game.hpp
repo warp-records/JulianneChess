@@ -60,13 +60,13 @@ class Game {
 	Bitboard genMoveSpacePart(Bitboard rangePart, bool spanUp) const;
 
 	//NEEEEEEDS to be optimized!
-	bool isCheck(Color color, std::optional<Pos> kingPosHint = std::nullopt);
+	bool isCheck(Color color);
 
 	//Exclusively used for check detecting functions...
 	//doesn't behave the same as the rest of the move gen functions
 	Bitboard genPawnThreat(Piece const& piece) const;
 
-	void updateGameStatus();
+	GameStatus checkGameStatus();
 
 public:
 

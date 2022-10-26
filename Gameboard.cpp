@@ -223,6 +223,19 @@ void GameBoard::redoMove() {
 
 bool squareOccupied(Pos pos);
 
+Pieces::King const& GameBoard::getKing(Color color) const {
+	//"black" refers to a Team variable, see Game.hpp
+	auto const& pieceList = (color == Color::Black ? black.pieceList : white.pieceList);
+
+	for (auto const& pc : pieceList) {
+		if (pc->getType() == PieceType::King && 
+				pc->getColor() == color) {
+			//ik it looks weird but this is the only way to do it
+			return *static_cast<Pieces::King*>(&*pc);
+		}
+	}
+}
+
 std::ostream& operator<<(std::ostream& os, GameBoard const& gameBoard) {
 	std::unordered_map<PieceType, char> pieceSymbolMap {
 		{ PieceType::King, 'k' },

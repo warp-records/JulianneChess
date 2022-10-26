@@ -322,19 +322,16 @@ Bitboard Game::getMovesFromPos(Pos pos) {
 }
 
 
-bool Game::isCheck(Color color, std::optional<Pos> kingPosHint) {
+bool Game::isCheck(Color color) {
 	
 	Bitboard threatBB = 0;
-	Bitboard kingBB = kingPosHint.has_value() ? kingPosHint.value().asBitBoard() : 0;
+	Bitboard kingBB = gameBoard.getKing(color).getBBoard();
 
 	for (uint8_t col = 0; col < 8; col++) {
 		for (uint8_t row = 0; row < 8; row++) {
 			if (gameBoard.squareOccupied({col, row})) {
 
 				Piece const& piece = gameBoard.getPiece({col, row});
-
-				if (!kingBB && piece.getType() == PieceType::King && 
-						piece.getColor() == color) { kingBB = piece.getBBoard(); }
 
 				if (piece.getColor() == !color) {
 					//Pawns have distinct attack and normal moves
@@ -352,10 +349,23 @@ bool Game::isCheck(Color color, std::optional<Pos> kingPosHint) {
 	return false;
 }
 
+//Idk I'll do it later lol
+/*
+GameStatus Game::checkGameStatus() {
+	//Maybe just store turn as color instead of in game status?
+	Color turnColor = (status == GameStatus::BlackTurn ? 
+		Color::Black : Color::White);
+
+	Pieces::King king = gameBoard.getKing(turnColor);
+}
+*/
+
 std::string Game::gameOutput() {
 	std::ostringstream stream;
 
 	stream << "Will Smith vs Chris Rock:\n\n";
+
+	status = checkGameStatus();
 
 	switch (status) {
 		case (GameStatus::WhiteTurn) : {
@@ -365,6 +375,16 @@ std::string Game::gameOutput() {
 
 		case (GameStatus::BlackTurn) : {
 			stream << "Black's turn";
+			break;
+		}
+
+		case (GameStatus::BlackWin) : {
+			stream << "Checkmate! Black wins!";
+			break;
+		}
+
+		case (GameStatus::WhiteWin) : {
+			stream << "Checkmate! White wins!";
 			break;
 		}
 	}
