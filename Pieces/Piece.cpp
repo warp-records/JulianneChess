@@ -36,3 +36,11 @@ std::istream& operator>>(std::istream& is, Pos& pos) {
 
 	return is;
 }
+
+
+Pos bbAsPos(Bitboard bb) {
+	//Bits 0-2 are column, bits 
+	//return Pos(~(bb & 0b0111), bb & 0b00111000);
+	uint8_t offset = std::countr_zero(bb);
+	return Pos({uint8_t (offset % 8), uint8_t (offset / 8)});
+}

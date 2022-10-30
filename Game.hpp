@@ -5,6 +5,8 @@
 #include "Gameboard.hpp"
 #include <optional>
 #include <iostream>
+#include <variant>
+#include <utility>
 
 enum class GameStatus {
 	WhiteTurn,
@@ -68,6 +70,11 @@ class Game {
 
 	GameStatus checkGameStatus();
 
+
+	//AI functions:
+	std::variant<int, std::pair<Pos, Pos>> miniMax(bool max, int depth = 0);
+	int boardEval();
+
 public:
 
 	//Debug functions
@@ -77,6 +84,10 @@ public:
 	void movePiece(Pos start, Pos end);
 	void undoMove() { gameBoard.undoMove(); numMoves--; }
 	void redoMove() { gameBoard.redoMove(); numMoves++; }
+
+	std::pair<Pos, Pos> getBestMove();
+
+	Color turnColor() { return status == GameStatus::WhiteTurn ? Color::White : Color::Black; }
 
 	std::string gameOutput();
 

@@ -37,6 +37,8 @@ struct Pos {
 std::ostream& operator<<(std::ostream& os, Pos pos);
 std::istream& operator>>(std::istream& is, Pos& pos);
 
+Pos bbAsPos(Bitboard bb);
+
 
 /*This really should be inside the Pieces namespace,
 but adding it would screw with a lot of code*/

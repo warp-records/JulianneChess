@@ -1,4 +1,5 @@
 #include <cstdint>
+#include <bit>
 #include <iostream>
 
 #pragma once
@@ -27,7 +28,5 @@ right()
 transform(x, y)
 */
 typedef uint64_t Bitboard;
-
-
 
 std::ostream& outBitBoard(std::ostream& os, Bitboard board, bool debugBoard = true);

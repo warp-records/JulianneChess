@@ -34,12 +34,17 @@ int main() {
 
 		std::cin >> strIn;
 
+
 		if (strIn == "undo") {
 			game.undoMove();
 			continue;
 		} else if (strIn == "redo") {
 			game.redoMove();
 			continue;
+		} else if (strIn == "bestmove") {
+			std::cout << "Engine move pick: " << std::flush;
+			std::pair<Pos, Pos> move = game.getBestMove();
+			std::cout << move.first << ", " << move.second;
 		}
 
 		Pos piecePos;

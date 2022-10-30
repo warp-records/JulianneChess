@@ -321,6 +321,8 @@ Bitboard Game::getMovesFromPos(Pos pos) {
 	return genMoves(gameBoard.getPiece(pos));
 }
 
+//Note: consider cacheing threatBB and doing bit hacks
+//on it for fast check detection, similar to move gen
 
 bool Game::isCheck(Color color) {
 	
@@ -349,7 +351,16 @@ bool Game::isCheck(Color color) {
 	return false;
 }
 
-//Idk I'll do it later lol
+std::pair<Pos, Pos> Game::getBestMove() {
+	return std::get<std::pair<Pos, Pos>>(miniMax(turnColor() == Color::White ? true : false)); 
+}
+
+
+
+//NOTE: all moves will need to be checked in minimax anyway, and thus
+//checking many different moves may not slow it down
+
+//It might be better to come back to this *after* implementing minimax
 /*
 GameStatus Game::checkGameStatus() {
 	//Maybe just store turn as color instead of in game status?
@@ -364,8 +375,6 @@ std::string Game::gameOutput() {
 	std::ostringstream stream;
 
 	stream << "Will Smith vs Chris Rock:\n\n";
-
-	status = checkGameStatus();
 
 	switch (status) {
 		case (GameStatus::WhiteTurn) : {
@@ -399,7 +408,7 @@ std::string Game::gameOutput() {
 
 	if (isCheck(Color::White))
 		stream << "White is in check!" << std::endl;
-	
+
 
 	return stream.str();
 }

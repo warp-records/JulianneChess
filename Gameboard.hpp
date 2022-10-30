@@ -59,6 +59,7 @@ public:
 	//Revisit this interface later
 	Bitboard genBitBoard() const;
 	Piece const& getPiece(Pos pos) const { return *(board.at(pos.column).at(pos.row)); }
+	Piece& getPiece(Pos pos) { return *(board.at(pos.column).at(pos.row)); }
 	bool squareOccupied(Pos pos) const { return board.at(pos.column).at(pos.row) != nullptr; }
 	Pieces::King const& getKing(Color color) const;
 
@@ -68,7 +69,7 @@ public:
 	void movePiece(Pos start, Pos end);
 	void undoMove();
 	void redoMove();
-	//Must explicitly speicfy template arguments to function
+	//Must explicitly specify template arguments to function
 	//call since iterators are different types
 	//int getNumMoves() const { return std::distance<std::vector<MoveData>::const_iterator>(currMove, moveHistory.end()); }; 
 
